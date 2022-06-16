@@ -1,8 +1,10 @@
 NAME = ircserv
 
 SRC =			main.cpp \
-				error.cpp \
-				commands.cpp \
+				Utils/error.cpp \
+				Utils/syntax.cpp \
+				Commands/connexion_cmds.cpp \
+				Commands/replies.cpp \
 				Client.cpp \
 				Command.cpp \
 				Ircserv.cpp

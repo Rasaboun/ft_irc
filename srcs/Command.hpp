@@ -11,17 +11,19 @@ class Command
 
 	Command(std::string& command);
 
-	std::string					getPrefix() const;
-	std::string					getName() const;
-	const std::vector<std::string>&	getParams() const;
+	std::string							getPrefix() const;
+	std::string							getName() const;
+	const std::vector<std::string>&		getParams() const;
+	const std::string&					getParam(size_t i) const;
+	int									getNbParams() const;
 
-	void						exec(Client* client);
+	void								exec(Client* client);
 
 	private:
 
-	std::string					prefix;	
-	std::string					name;
-	std::vector<std::string>	params;
+	std::string							prefix;	
+	std::string							name;
+	std::vector<std::string>			params;
 };
 
 #endif

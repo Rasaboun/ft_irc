@@ -16,6 +16,11 @@ void	Client::handle_input(Ircserv& serv)
 			if (commands[i].getName() != "PASS")
 				continue ;
 		}
+		else if (curr_state == NEED_NICK)
+		{
+			if (commands[i].getName() != "NICK")
+				continue ;
+		}
 		else if (curr_state == NEED_USER)
 		{
 			if (commands[i].getName() != "USER")
@@ -35,9 +40,9 @@ void 	Client::receive(Ircserv& serv)
 	{
 		char buffer[BUFFER_SIZE + 1];
 		ssize_t size;
-		std::cout << "Receiving data\n";
 		if ((size = recv(this->fd, &buffer, BUFFER_SIZE, 0)) < 0)
 			return ;
+		std::cout << "Received : " << buffer << std::endl;
 		if (size == 0)
 		{
 			this->state = DCED;
@@ -62,10 +67,18 @@ void 	Client::receive(Ircserv& serv)
 	handle_input(serv);
 }
 
-int 	Client::getState() const { return this->state; }
-int 	Client::getFd() const { return this->fd; }
+void		Client::print(std::string message) const
+{
+	message += "\n";
+	write(this->fd, message.c_str(), message.length());
+}
 
-void	Client::setState(const int new_state) { this->state = new_state; }
+int 				Client::getState() const { return this->state; }
+int 				Client::getFd() const { return this->fd; }
+const std::string&	Client::getNickname() const { return (this->nickname); }
+
+void				Client::setNickname(const std::string& new_nickname) { this->nickname = new_nickname; }
+void				Client::setState(const int new_state) { this->state = new_state; }
 
 Client::Client(int fd, struct sockaddr_in address): fd(fd), state(NEED_PASS)
 {
@@ -73,10 +86,10 @@ Client::Client(int fd, struct sockaddr_in address): fd(fd), state(NEED_PASS)
 	fcntl(fd, F_SETFL, O_NONBLOCK);
 	char hostname[NI_MAXHOST];
 	if (getnameinfo((struct sockaddr *) &address, sizeof(address), hostname, NI_MAXHOST, NULL, 0, NI_NUMERICSERV) != 0)
-		std::cout << "syscall error \"getnameinfo\"" << std::endl;
+		syscall_error("getnameinfo");
 	else
 		this->hostname = hostname;
-	std::cout << "Hostname : " << hostname << std::endl;
+	//print("Welcome to my IRC server\n");
 }
 
 Client::Client():

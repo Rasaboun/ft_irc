@@ -24,11 +24,16 @@ class Client
 	const Client&		operator=(const Client& rhs);
 	
 	void				receive(Ircserv& serv);
+	void				print(std::string message) const;
 
 	int					getState() const;
 	int					getFd() const;
+	const std::string&	getNickname() const;
 
 	void				setState(const int new_state);
+	void				setNickname(const std::string& new_nickname);
+
+	int					avalableNickname(const std::string& nickname);
 
 	private:
 

@@ -35,3 +35,11 @@ void Command::exec(Client* client)
 std::string	Command::getPrefix() const { return (this->prefix); }
 std::string	Command::getName() const { return (this->name); }
 const std::vector<std::string>&	Command::getParams() const { return (this->params); }
+const std::string&	Command::getParam(size_t i) const 
+{
+	if (i >= this->params.size())
+		return (this->params[0]);
+	return (this->params[i]);
+}
+
+int			Command::getNbParams() const { return (this->params.size()); }

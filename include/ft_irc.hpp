@@ -14,16 +14,20 @@
 #include <cstring>
 #include <cstdlib>
 #include <csignal>
+#include <cctype>
 
-
+#include <errno.h>
 #include <fcntl.h>
 
 #include <vector>
 #include <map>
 
+class Client    ;
+class Command   ;
+class Ircserv   ;
+
 int 		error(std::string message);
 int 		syscall_error(std::string message);
-
-#define ERR_NONICKNAMEGIVEN	"No nickname given\n"
-
+int         reply(int code, Client* client, Ircserv& serv, Command& params);
+int         is_valid_nickname(const std::string& nickname);
 #endif

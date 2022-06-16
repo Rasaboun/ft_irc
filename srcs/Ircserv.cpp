@@ -91,6 +91,16 @@ void	Ircserv::removeClient(Client* client)
 	delete client;
 }
 
+int		Ircserv::availableNickname(const std::string& nickname)
+{
+	for (std::map<int, Client *>::iterator it = clients.begin(); it != clients.end(); it++)
+	{
+		if (it->second->getNickname() == nickname)
+			return (0);
+	}
+	return (1);
+}
+
 void	Ircserv::execCommand(Client* client, Command& command)
 {
 
@@ -98,7 +108,7 @@ void	Ircserv::execCommand(Client* client, Command& command)
 
 	if (it == commands.end())
 		return ;
-	(*it->second)(client, *this, command.getParams());
+	(*it->second)(client, *this, command);
 }
 
 const std::string& Ircserv::getPassword() const { return (this->password); }
@@ -108,6 +118,7 @@ Ircserv::Ircserv(int port, const std::string& password):
 		password(password)
 {
 	commands["PASS"] = pass;
+	commands["NICK"] = nick;
 }
 
 Ircserv::~Ircserv()

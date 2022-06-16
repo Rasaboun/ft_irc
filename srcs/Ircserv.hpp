@@ -12,7 +12,7 @@ class Ircserv
 {	
 	public:
 
-	typedef	void (*cmd_type)(Client*, Ircserv&, std::vector<std::string>);
+	typedef	int (*cmd_type)(Client*, Ircserv&, Command&);
 
 	Ircserv(int port, const std::string& password);
 	~Ircserv();
@@ -22,9 +22,10 @@ class Ircserv
 	void								execCommand(Client* client, Command& command);
 
 	void								removeClient(Client *client);
+	int									availableNickname(const std::string& nickname);
 
 	const std::string&					getPassword() const ;
-
+	
 	private:
 
 	int									port;
@@ -39,6 +40,6 @@ class Ircserv
 };
 
 
-void	pass(Client *client, Ircserv& serv, std::vector<std::string> params);
-
+int		pass(Client *client, Ircserv& serv, Command& command);
+int		nick(Client *client, Ircserv& serv, Command& command);
 #endif
