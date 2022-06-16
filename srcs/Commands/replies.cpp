@@ -20,7 +20,16 @@ int     error_replies(int code, Client* client, Ircserv& serv, Command& command)
             client->print(command.getName() + " :Not enough parameters");
             break;
         case 462:
-            client->print("Unautorized command (already registered)");
+            client->print(":Unautorized command (already registered)");
+            break;
+        case 464:
+            client->print(":Password incorrect");
+            break;
+        case 501:
+            client->print(":Uknown MODE flag");
+            break;
+        case 502:
+            client->print(":Cannot change mode for other users");
             break;
         default:
             break;
@@ -28,10 +37,33 @@ int     error_replies(int code, Client* client, Ircserv& serv, Command& command)
     return (0);
 }
 
+int    command_responses(int code, Client* client, Ircserv& serv, Command& command)
+{
+    (void)client;
+    (void)serv;
+    (void)command;
+    
+    switch (code)
+    {
+        case 221:
+        {
+            Client* target = serv.getClient(command.getParam(0));
+            if (target)
+                target->print(target->getNickname() + "'s user mode is : +" + target->getModes());
+            break;
+        }
+        default:
+            break;
+    }
+    return (0);
+}
+
+
 int     reply(int code, Client* client, Ircserv& serv, Command& command)
 {
     if (code > 400)
         return (error_replies(code, client, serv, command));
+    else
+        return (command_responses(code, client, serv, command));
     return (0);
 }
-

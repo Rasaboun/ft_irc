@@ -11,7 +11,7 @@ void	Client::handle_input(Ircserv& serv)
 		return ;
 	for (size_t i = 0; i < commands.size(); i++)
 	{
-		if (curr_state == NEED_PASS)
+/*		if (curr_state == NEED_PASS)
 		{
 			if (commands[i].getName() != "PASS")
 				continue ;
@@ -26,7 +26,7 @@ void	Client::handle_input(Ircserv& serv)
 			if (commands[i].getName() != "USER")
 				continue ;
 		}
-		serv.execCommand(this, commands[i]);
+*/		serv.execCommand(this, commands[i]);
 		//commands[i].exec(this);
 		this->commands.erase(commands.begin() + i);
 	}
@@ -67,18 +67,54 @@ void 	Client::receive(Ircserv& serv)
 	handle_input(serv);
 }
 
-void		Client::print(std::string message) const
+int		Client::print(std::string message) const
 {
 	message += "\n";
 	write(this->fd, message.c_str(), message.length());
+	return (1);
 }
 
 int 				Client::getState() const { return this->state; }
 int 				Client::getFd() const { return this->fd; }
+const std::string&	Client::getUsername() const { return (this->username); }
+const std::string&	Client::getRealname() const { return (this->realname); }
 const std::string&	Client::getNickname() const { return (this->nickname); }
+bool				Client::getMode(const char& mode) const
+{
+	std::map<const char, bool>::const_iterator it = this->modes.find(mode);
 
+	if (it == this->modes.end())
+		return (false);
+	return (it->second);
+}
+std::string		Client::getModes() const
+{
+	std::string res;
+	
+	for(std::map<const char, bool>::const_iterator it = modes.begin(); it != modes.end(); it++)
+	{
+		std::cout << it->first;
+		if (it->second)
+			std::cout << " true\n";
+		else
+			std::cout << " false\n";
+		if (it->second)
+			res += it->first;
+	}
+	return (res);
+}
+
+
+void				Client::setUsername(const std::string& new_username) { this->username = new_username; }
+void				Client::setRealname(const std::string& new_realname) { this->realname = new_realname; }
 void				Client::setNickname(const std::string& new_nickname) { this->nickname = new_nickname; }
 void				Client::setState(const int new_state) { this->state = new_state; }
+void				Client::setMode(const char& mode, bool value)
+{
+	if (this->modes.count(mode) == 0)
+		return ;
+	this->modes[mode] = value;
+}
 
 Client::Client(int fd, struct sockaddr_in address): fd(fd), state(NEED_PASS)
 {
@@ -89,7 +125,14 @@ Client::Client(int fd, struct sockaddr_in address): fd(fd), state(NEED_PASS)
 		syscall_error("getnameinfo");
 	else
 		this->hostname = hostname;
-	//print("Welcome to my IRC server\n");
+
+	modes['a'] = false;
+	modes['i'] = false;
+	modes['w'] = false;
+	modes['r'] = false;
+	modes['o'] = false;
+	modes['O'] = false;
+	modes['s'] = false;
 }
 
 Client::Client():

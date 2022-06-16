@@ -112,6 +112,16 @@ void	Ircserv::execCommand(Client* client, Command& command)
 }
 
 const std::string& Ircserv::getPassword() const { return (this->password); }
+Client*				Ircserv::getClient(const std::string& nickname) const
+{
+	for (std::map<int, Client *>::const_iterator it = clients.begin(); it != clients.end(); it++)
+	{
+		if (it->second->getNickname() == nickname)
+			return (it->second);
+	}
+	return (NULL);
+}
+
 
 Ircserv::Ircserv(int port, const std::string& password):
 		port(port),
@@ -119,6 +129,10 @@ Ircserv::Ircserv(int port, const std::string& password):
 {
 	commands["PASS"] = pass;
 	commands["NICK"] = nick;
+	commands["USER"] = user;
+	commands["OPER"] = oper;
+	commands["MODE"] = mode;
+	commands["QUIT"] = quit;
 }
 
 Ircserv::~Ircserv()

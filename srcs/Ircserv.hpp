@@ -25,7 +25,7 @@ class Ircserv
 	int									availableNickname(const std::string& nickname);
 
 	const std::string&					getPassword() const ;
-	
+	Client*								getClient(const std::string& nickname) const;
 	private:
 
 	int									port;
@@ -42,4 +42,9 @@ class Ircserv
 
 int		pass(Client *client, Ircserv& serv, Command& command);
 int		nick(Client *client, Ircserv& serv, Command& command);
+int		user(Client *client, Ircserv& serv, Command& command);
+int		oper(Client *client, Ircserv& serv, Command& command);
+int		mode(Client *client, Ircserv& serv, Command& command);
+int     quit(Client* client, Ircserv& serv, Command& command);
+
 #endif
