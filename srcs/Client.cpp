@@ -5,31 +5,29 @@
 
 void	Client::handle_input(Ircserv& serv)
 {
-	int curr_state = this->state;
-
-	if (curr_state == DCED)
-		return ;
 	for (size_t i = 0; i < commands.size(); i++)
 	{
-/*		if (curr_state == NEED_PASS)
+		if (this->state == DCED)
+			return ;
+		if (this->state == NEED_PASS)
 		{
 			if (commands[i].getName() != "PASS")
 				continue ;
 		}
-		else if (curr_state == NEED_NICK)
+		else if (this->state == NEED_NICK)
 		{
 			if (commands[i].getName() != "NICK")
 				continue ;
 		}
-		else if (curr_state == NEED_USER)
+		else if (this->state == NEED_USER)
 		{
 			if (commands[i].getName() != "USER")
 				continue ;
 		}
-*/		serv.execCommand(this, commands[i]);
-		//commands[i].exec(this);
-		this->commands.erase(commands.begin() + i);
+		
+		serv.execCommand(this, commands[i]);
 	}
+	this->commands.erase(commands.begin(), commands.end());
 }
 
 void 	Client::receive(Ircserv& serv)
@@ -46,7 +44,7 @@ void 	Client::receive(Ircserv& serv)
 		if (size == 0)
 		{
 			this->state = DCED;
-			std::cout << "Disconected\n";
+			std::cout << "Disconnected\n";
 			return ;
 		}
 		buffer[size] = 0;
@@ -61,7 +59,6 @@ void 	Client::receive(Ircserv& serv)
 		this->data.erase(0, position + 2);
 		if (!command.length())
 			continue ;
-		
 		this->commands.push_back(Command(command));
 	}
 	handle_input(serv);
@@ -69,7 +66,7 @@ void 	Client::receive(Ircserv& serv)
 
 int		Client::print(std::string message) const
 {
-	message += "\n";
+	message += "\r\n";
 	write(this->fd, message.c_str(), message.length());
 	return (1);
 }
@@ -79,6 +76,8 @@ int 				Client::getFd() const { return this->fd; }
 const std::string&	Client::getUsername() const { return (this->username); }
 const std::string&	Client::getRealname() const { return (this->realname); }
 const std::string&	Client::getNickname() const { return (this->nickname); }
+const std::string	Client::getFullname() const { return (this->nickname + "!" + this->username + "@" + this->hostname); }
+
 bool				Client::getMode(const char& mode) const
 {
 	std::map<const char, bool>::const_iterator it = this->modes.find(mode);
@@ -94,10 +93,6 @@ std::string		Client::getModes() const
 	for(std::map<const char, bool>::const_iterator it = modes.begin(); it != modes.end(); it++)
 	{
 		std::cout << it->first;
-		if (it->second)
-			std::cout << " true\n";
-		else
-			std::cout << " false\n";
 		if (it->second)
 			res += it->first;
 	}
@@ -116,7 +111,7 @@ void				Client::setMode(const char& mode, bool value)
 	this->modes[mode] = value;
 }
 
-Client::Client(int fd, struct sockaddr_in address): fd(fd), state(NEED_PASS)
+Client::Client(int fd, struct sockaddr_in address): fd(fd), state(NEED_NICK)
 {
 
 	fcntl(fd, F_SETFL, O_NONBLOCK);

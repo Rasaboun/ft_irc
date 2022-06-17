@@ -3,6 +3,7 @@ NAME = ircserv
 SRC =			main.cpp \
 				Utils/error.cpp \
 				Utils/syntax.cpp \
+				Utils/utils.cpp \
 				Commands/connexion_cmds.cpp \
 				Commands/replies.cpp \
 				Client.cpp \

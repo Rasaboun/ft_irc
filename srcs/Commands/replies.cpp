@@ -1,6 +1,6 @@
 #include "Ircserv.hpp"
 
-int     error_replies(int code, Client* client, Ircserv& serv, Command& command)
+std::string    error_replies(int code, Client* client, Ircserv& serv, Command& command)
 {
     (void)client;
     (void)serv;
@@ -8,28 +8,28 @@ int     error_replies(int code, Client* client, Ircserv& serv, Command& command)
     switch (code)
     {
         case 431:
-            client->print(":No nickname given");
+            return(":No nickname given");
             break;
         case 432:
-            client->print(command.getParam(0) + " :Erroneous nickname");
+            return(command.getParam(0) + " :Erroneous nickname");
             break;
         case 433:
-            client->print(command.getParam(0) + " :Nickname already in use");
+            return(command.getParam(0) + " :Nickname already in use");
             break;
         case 461:
-            client->print(command.getName() + " :Not enough parameters");
+            return(command.getName() + " :Not enough parameters");
             break;
         case 462:
-            client->print(":Unautorized command (already registered)");
+            return(":Unautorized command (already registered)");
             break;
         case 464:
-            client->print(":Password incorrect");
+            return(":Password incorrect");
             break;
         case 501:
-            client->print(":Uknown MODE flag");
+            return(":Uknown MODE flag");
             break;
         case 502:
-            client->print(":Cannot change mode for other users");
+            return(":Cannot change mode for other users");
             break;
         default:
             break;
@@ -37,19 +37,31 @@ int     error_replies(int code, Client* client, Ircserv& serv, Command& command)
     return (0);
 }
 
-int    command_responses(int code, Client* client, Ircserv& serv, Command& command)
+std::string   command_responses(int code, Client* client, Ircserv& serv, Command& command)
 {
-    (void)client;
-    (void)serv;
-    (void)command;
-    
     switch (code)
     {
+        case 001:
+        {
+            return("Welcome to the Internet Relay Network " + client->getFullname());
+        }
+        case 002:
+        {
+            return("Your host is " + serv.getName() + ", running version 1.0");
+        }
+        case 003:
+        {
+            return("This server was created today");
+        }
+        case 004:
+        {
+            return(serv.getName() + " 1.0 (need to add available modes)");
+        }
         case 221:
         {
             Client* target = serv.getClient(command.getParam(0));
             if (target)
-                target->print(target->getNickname() + "'s user mode is : +" + target->getModes());
+                return(target->getNickname() + "'s user mode is : +" + target->getModes());
             break;
         }
         default:
@@ -61,9 +73,11 @@ int    command_responses(int code, Client* client, Ircserv& serv, Command& comma
 
 int     reply(int code, Client* client, Ircserv& serv, Command& command)
 {
+    std::string     res = ":ircserv " + convert_code(code) + " " + client->getNickname() + " ";
     if (code > 400)
-        return (error_replies(code, client, serv, command));
+        res += error_replies(code, client, serv, command);
     else
-        return (command_responses(code, client, serv, command));
+        res += command_responses(code, client, serv, command);
+    client->print(res);
     return (0);
 }

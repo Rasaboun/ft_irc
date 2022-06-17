@@ -31,50 +31,44 @@ void 	Ircserv::run()
 {
 	if (poll(&client_fds[0], client_fds.size(), 60 * 1000) == -1)
 		return ;
-	if (0) // if curr time - last ping > ping
+	
+	if (client_fds[0].revents == POLLIN)
 	{
-		//send ping to each user
+		//accept new connection
+		struct sockaddr_in client_address;
+		socklen_t csin_len = sizeof(client_address);
+		int client_fd = accept(fd, (struct sockaddr *)&client_address, &csin_len);
+		if (client_fd == -1)
+			return ;
+
+		clients[client_fd] = new Client(client_fd, client_address);
+
+		client_fds.push_back(pollfd());
+		client_fds.back().fd = client_fd;
+		client_fds.back().events = POLLIN;
+		
 	}
 	else
 	{
-		if (client_fds[0].revents == POLLIN)
+		for (std::vector<pollfd>::iterator it = client_fds.begin(); it != client_fds.end(); it++)
 		{
-			//accept new connection
-			struct sockaddr_in client_address;
-			socklen_t csin_len = sizeof(client_address);
-			int client_fd = accept(fd, (struct sockaddr *)&client_address, &csin_len);
-			if (client_fd == -1)
-				return ;
-
-			clients[client_fd] = new Client(client_fd, client_address);
-
-			client_fds.push_back(pollfd());
-			client_fds.back().fd = client_fd;
-			client_fds.back().events = POLLIN;
-			
-		}
-		else
-		{
-			for (std::vector<pollfd>::iterator it = client_fds.begin(); it != client_fds.end(); it++)
+			if ((*it).revents == POLLIN)
 			{
-				if ((*it).revents == POLLIN)
-				{
-					clients[(*it).fd]->receive(*this);
-				}
+				clients[(*it).fd]->receive(*this);
 			}
 		}
-		std::map<int, Client *>::iterator it = clients.begin();
-		while (it != clients.end())
+	}
+	std::map<int, Client *>::iterator it = clients.begin();
+	while (it != clients.end())
+	{
+		Client *client = (*it++).second;
+		if (client && client->getState() == DCED)
 		{
-			Client *client = (*it++).second;
-			if (client && client->getState() == DCED)
-			{
-				removeClient(client);
-			}
-			
+			removeClient(client);
 		}
 		
 	}
+	
 }
 
 void	Ircserv::removeClient(Client* client)
@@ -112,6 +106,7 @@ void	Ircserv::execCommand(Client* client, Command& command)
 }
 
 const std::string& Ircserv::getPassword() const { return (this->password); }
+const std::string& Ircserv::getName() const { return (this->name); }
 Client*				Ircserv::getClient(const std::string& nickname) const
 {
 	for (std::map<int, Client *>::const_iterator it = clients.begin(); it != clients.end(); it++)
@@ -125,7 +120,8 @@ Client*				Ircserv::getClient(const std::string& nickname) const
 
 Ircserv::Ircserv(int port, const std::string& password):
 		port(port),
-		password(password)
+		password(password),
+		name(SERV_NAME)
 {
 	commands["PASS"] = pass;
 	commands["NICK"] = nick;

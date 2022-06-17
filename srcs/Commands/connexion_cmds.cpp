@@ -13,6 +13,7 @@ int	pass(Client *client, Ircserv& serv, Command& command)
 
 int	nick(Client *client, Ircserv& serv, Command& command)
 {
+	std::cout << "In nick\n";
 	if (command.getNbParams() == 0)
 		return (reply(ERR_NONICKNAMEGIVEN, client, serv, command));
 	if (!is_valid_nickname(command.getParam(0)))
@@ -22,14 +23,17 @@ int	nick(Client *client, Ircserv& serv, Command& command)
 
 	client->setNickname(command.getParam(0));
 	if (client->getState() == NEED_NICK)
+	{
 		client->setState(NEED_USER);
-	
+		return (reply(RPL_WELCOME, client, serv, command));
+	}
 	return (0);
 }
 
 
 int	user(Client *client, Ircserv& serv, Command& command)
 {
+	std::cout << "In user\n";
 	if (client->getState() != NEED_USER)
 		return (reply(ERR_ALREADYREGISTERED, client, serv, command));
 	if (command.getNbParams() < 4)
@@ -48,6 +52,11 @@ int	user(Client *client, Ircserv& serv, Command& command)
 	}
 	client->setRealname(realname);
 	client->setState(REGISTERED);
+	reply(RPL_WELCOME, client, serv, command);
+	reply(RPL_YOURHOST, client, serv, command);
+	reply(RPL_CREATED, client, serv, command);
+	reply(RPL_MYINFO, client, serv, command);
+	
 	return (0);
 }
 

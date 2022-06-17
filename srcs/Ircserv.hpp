@@ -24,12 +24,15 @@ class Ircserv
 	void								removeClient(Client *client);
 	int									availableNickname(const std::string& nickname);
 
-	const std::string&					getPassword() const ;
+	const std::string&					getPassword() const;
+	const std::string&					getName() const;
 	Client*								getClient(const std::string& nickname) const;
+	
 	private:
 
 	int									port;
 	const std::string					password;
+	const std::string					name;
 
 	int									fd;
 	struct sockaddr_in					address;
