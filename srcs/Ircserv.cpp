@@ -160,6 +160,7 @@ Ircserv::Ircserv(int port, const std::string& password):
 	commands["QUIT"] = quit;
 	commands["PRIVMSG"] = msg;
 	commands["JOIN"] = join;
+	commands["PART"] = part;
 }
 
 Ircserv::~Ircserv()

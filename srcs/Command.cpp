@@ -36,9 +36,9 @@ const std::string&	Command::getParam(size_t i) const
 	return (this->params[i]);
 }
 
-int			Command::getNbParams() const { return (this->params.size()); }
+int				Command::getNbParams() const { return (this->params.size()); }
 
-void		Command::display() const 
+void			Command::display() const 
 {
 	std::cout << this->getName();
 	for (size_t i = 0; i < params.size(); i++)
@@ -46,4 +46,20 @@ void		Command::display() const
 		std::cout << " " << params[i];
 	}
 	std::cout << std::endl;
+}
+
+std::string		Command::joinParams(size_t pos) const
+{
+	std::string res = "";
+	size_t		nb_params = params.size();
+
+	while (pos < nb_params)
+	{
+		res += params[pos++];
+		if (pos < nb_params)
+			res += " ";
+		else
+			break ;
+	}
+	return (res);
 }

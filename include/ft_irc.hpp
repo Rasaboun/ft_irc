@@ -42,6 +42,8 @@ int         	is_valid_mode(const std::string& mode);
 #define		RPL_CREATED					003
 #define		RPL_MYINFO					004
 #define     RPL_UMODEIS                 221
+#define     RPL_NOTOPIC                 331
+#define     RPL_TOPIC                   332
 
 #define     ERR_NOSUCHNICK              401
 #define     ERR_TOOMANYTARGETS          407

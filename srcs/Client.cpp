@@ -10,7 +10,6 @@ void	Client::handle_input(Ircserv& serv)
 	std::vector<Command>::iterator it = commands.begin();
 	while (it != commands.end())
 	{
-		it->display();
 		if (this->state == DCED)
 			break ;
 		if (this->state == NEED_PASS)
@@ -42,7 +41,7 @@ void	Client::handle_input(Ircserv& serv)
 		this->commands.erase(it);
 		
 	}
-	if (this->state != previous_state && this->state != DCED) // Successfully registered
+	if (this->state != previous_state && this->state != DCED) // If successfully registered check other cmds
 		handle_input(serv);
 	sendMessages();
 }
@@ -61,7 +60,6 @@ void 	Client::receive(Ircserv& serv)
 		if (size == 0)
 		{
 			this->state = DCED;
-			std::cout << "Disconnected\n";
 			return ;
 		}
 		buffer[size] = 0;

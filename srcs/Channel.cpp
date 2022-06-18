@@ -15,7 +15,7 @@ int                 Channel::getNbClients() const { return (this->clients.size()
 
 void                Channel::addClient(Client* client)
 { 
-    //Need to add joining messages
+    //Need to add Welcoming messages
     this->clients.push_back(client); 
 
 }

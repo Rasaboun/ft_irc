@@ -55,5 +55,6 @@ int		mode(Client *client, Ircserv& serv, Command& command);
 int     quit(Client* client, Ircserv& serv, Command& command);
 int		msg(Client *client, Ircserv& serv, Command& command);
 int		join(Client *client, Ircserv& serv, Command& command);
+int		part(Client *client, Ircserv& serv, Command& command);
 
 #endif

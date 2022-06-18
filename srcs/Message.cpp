@@ -5,7 +5,8 @@
 Message::Message(const std::string& sender, Client *target, const std::string& content):
     sender(sender),
     targets(),
-    content(content)
+    content(content),
+    channelName()
 {
     targets.push_back(target);
 }
@@ -13,14 +14,15 @@ Message::Message(const std::string& sender, Client *target, const std::string& c
 Message::Message(const std::string& sender, Channel *channel, const std::string& content):
     sender(sender),
     targets(),
-    content(content)
+    content(content),
+    channelName(channel->getName())
 {
     std::vector<Client *> clients = channel->getClients();
-    std::cout << "Channel size : " << clients.size() << std::endl;
 
     for (std::vector<Client *>::iterator it = clients.begin(); it != clients.end(); it++)
     {
-        std::cout << "Adding new target\n";
+        if ((*it)->getFullname() == sender)
+            continue ;
         targets.push_back((*it));
     }
 }
@@ -29,9 +31,12 @@ void    Message::addTarget(Client* target) { targets.push_back(target); }
 void    Message::send() const
 {
     std::string     base = ":" + this->sender + " PRIVMSG ";
-    std::cout << "In send\n";
+
     for (std::vector<Client *>::const_iterator it = targets.begin(); it != targets.end(); it++)
     {
-        (*it)->print(base + "#test "/* (*it)->getNickname() */ + " " + content);
+        if (this->channelName.length())
+            (*it)->print(base + this->channelName + " " + content);
+        else
+            (*it)->print(base +  (*it)->getNickname()  + " " + content);
     }
 }

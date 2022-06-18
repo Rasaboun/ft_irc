@@ -18,7 +18,7 @@ class Command
 	int									getNbParams() const;
 	
 	void								display() const;
-
+	std::string							joinParams(size_t pos) const;
 	private:
 
 	std::string							prefix;	

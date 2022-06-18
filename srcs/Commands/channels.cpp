@@ -8,8 +8,18 @@ int	join(Client *client, Ircserv& serv, Command& command)
     {
         serv.addChannel(command.getParam(0));
     }
-        serv.getChannel(command.getParam(0))->addClient(client);
-        std::cout << "Users in chan : " << serv.getChannel(command.getParam(0))->getNbClients() << std::endl;
-    
+    Channel*    chan = serv.getChannel(command.getParam(0));
+    chan->addClient(client);
+    if (chan->getTopic().length())
+        return (reply(RPL_TOPIC, client, serv, command));
+    return (reply(RPL_NOTOPIC, client, serv, command));
+}
+
+int	part(Client *client, Ircserv& serv, Command& command)
+{
+    (void)serv;
+    (void)command;
+    (void)client;
+
     return (0);
 }

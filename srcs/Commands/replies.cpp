@@ -47,11 +47,15 @@ std::string   command_responses(int code, Client* client, Ircserv& serv, Command
         case 002:         
             return("Your host is " + serv.getName() + ", running version 1.0");         
         case 003:         
-            return("This server was created today");         
+            return("This server was created today");   //Need to add correct date      
         case 004:         
             return(serv.getName() + " 1.0 (need to add available modes)");         
         case 221:         
-            return("+" + client->getModes());         
+            return("+" + client->getModes()); 
+        case 331:
+            return (command.getParam(0) + " :No topic is set");
+        case 332:
+            return (command.getParam(0) + " :" + serv.getChannel(command.getParam(0))->getTopic());             
         default:
             break;
     }

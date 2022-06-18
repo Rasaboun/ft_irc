@@ -22,6 +22,7 @@ class Message
     std::string             sender;
     std::vector<Client *>   targets;
     std::string             content;
+    std::string             channelName;
 };
 
 #endif
