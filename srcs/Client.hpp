@@ -9,7 +9,7 @@
 
 # include "ft_irc.hpp"
 # include "Command.hpp"
-
+# include "Message.hpp"
 
 class Ircserv;
 
@@ -41,6 +41,9 @@ class Client
 	void				setNickname(const std::string& new_nickname);
 	void				setMode(const char& mode, bool value);
 
+	void				addMessage(const Message& message);
+	void				sendMessages();
+
 	private:
 
 	int								fd;
@@ -54,6 +57,7 @@ class Client
 
 	std::vector<Command>			commands;
 	std::map<const char, bool>		modes;
+	std::vector<Message>			messages;
 
 	void				handle_input(Ircserv& serv);
 

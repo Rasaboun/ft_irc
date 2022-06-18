@@ -72,6 +72,15 @@ void 	Ircserv::run()
 	
 }
 
+void	Ircserv::addChannel(const std::string& name)
+{
+	std::cout << "Here\n";
+	if (this->channels.count(name))
+		return ;
+	std::cout << "Here\n";
+	this->channels[name] = new Channel(this, name);
+}
+
 void	Ircserv::removeClient(Client* client)
 {
 	for (std::vector<pollfd>::iterator fd_it = client_fds.begin(); fd_it != client_fds.end(); fd_it++)
@@ -85,6 +94,14 @@ void	Ircserv::removeClient(Client* client)
 	clients.erase(client->getFd());
 	delete client;
 }
+
+
+void	Ircserv::removeChannel(Channel* channel)
+{
+	delete channel;
+}
+
+int		Ircserv::isChannel(const std::string& name) const { return (this->channels.count(name)); }
 
 int		Ircserv::availableNickname(const std::string& nickname)
 {
@@ -106,8 +123,8 @@ void	Ircserv::execCommand(Client* client, Command& command)
 	(*it->second)(client, *this, command);
 }
 
-const std::string& Ircserv::getPassword() const { return (this->password); }
-const std::string& Ircserv::getName() const { return (this->name); }
+const std::string& 	Ircserv::getPassword() const { return (this->password); }
+const std::string& 	Ircserv::getName() const { return (this->name); }
 Client*				Ircserv::getClient(const std::string& nickname) const
 {
 	for (std::map<int, Client *>::const_iterator it = clients.begin(); it != clients.end(); it++)
@@ -116,6 +133,17 @@ Client*				Ircserv::getClient(const std::string& nickname) const
 			return (it->second);
 	}
 	return (NULL);
+}
+
+Channel*			Ircserv::getChannel(const std::string& name) const 
+{
+	for (std::map<std::string, Channel *>::const_iterator it = channels.begin(); it != channels.end(); it++)
+	{
+		if (it->second->getName() == name)
+			return (it->second);
+	}
+	return (NULL);
+
 }
 
 
@@ -130,14 +158,20 @@ Ircserv::Ircserv(int port, const std::string& password):
 	commands["OPER"] = oper;
 	commands["MODE"] = mode;
 	commands["QUIT"] = quit;
+	commands["PRIVMSG"] = msg;
+	commands["JOIN"] = join;
 }
 
 Ircserv::~Ircserv()
 {
-	std::cout << "Destructor called\n" << std::endl;
 	std::map<int, Client*>::iterator it = clients.begin();
 	while (it != clients.end())
 	{
 		removeClient(it++->second);
+	}
+	std::map<std::string, Channel*>::iterator ite = channels.begin();
+	while (ite != channels.end())
+	{
+		removeChannel(ite++->second);
 	}
 }

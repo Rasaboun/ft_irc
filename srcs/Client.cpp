@@ -12,7 +12,7 @@ void	Client::handle_input(Ircserv& serv)
 	{
 		it->display();
 		if (this->state == DCED)
-			return ;
+			break ;
 		if (this->state == NEED_PASS)
 		{
 			if (it->getName() != "PASS")
@@ -42,8 +42,9 @@ void	Client::handle_input(Ircserv& serv)
 		this->commands.erase(it);
 		
 	}
-	if (this->state != previous_state)
+	if (this->state != previous_state && this->state != DCED) // Successfully registered
 		handle_input(serv);
+	sendMessages();
 }
 
 void 	Client::receive(Ircserv& serv)
@@ -80,9 +81,17 @@ void 	Client::receive(Ircserv& serv)
 	handle_input(serv);
 }
 
+void	Client::sendMessages()
+{
+	for (std::vector<Message>::const_iterator it = messages.begin(); it != messages.end(); it++)
+		it->send();
+	messages.clear();
+}
+
 int		Client::print(std::string message) const
 {
 	message += "\r\n";
+	std::cout << getNickname() << " sending : " << message;
 	write(this->fd, message.c_str(), message.length());
 	return (1);
 }
@@ -149,6 +158,8 @@ Client::Client(int fd, struct sockaddr_in address):
 	modes['O'] = false;
 	modes['s'] = false;
 }
+
+void		Client::addMessage(const Message& message) { messages.push_back(message); }
 
 Client::Client():
 		state(NEED_PASS)

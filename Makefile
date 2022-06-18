@@ -4,10 +4,14 @@ SRC =			main.cpp \
 				Utils/error.cpp \
 				Utils/syntax.cpp \
 				Utils/utils.cpp \
-				Commands/connexion_cmds.cpp \
+				Commands/connexion.cpp \
+				Commands/messages.cpp \
+				Commands/channels.cpp \
 				Commands/replies.cpp \
 				Client.cpp \
 				Command.cpp \
+				Message.cpp \
+				Channel.cpp \
 				Ircserv.cpp
 
 SRCS =			$(addprefix $(DIR_SRCS), $(SRC))

@@ -3,10 +3,8 @@
 
 # include "ft_irc.hpp"
 # include "Client.hpp"
+# include "Channel.hpp"
 
-#define CMD_TYPE	
-
-class Client;
 
 class Ircserv
 {	
@@ -21,13 +19,18 @@ class Ircserv
 	void								run();
 	void								execCommand(Client* client, Command& command);
 
+	void								addChannel(const std::string& name);
 	void								removeClient(Client *client);
+	void								removeChannel(Channel *channel);
+
+	int									isChannel(const std::string& name) const ;
 	int									availableNickname(const std::string& nickname);
 
 	const std::string&					getPassword() const;
 	const std::string&					getName() const;
 	Client*								getClient(const std::string& nickname) const;
-	
+	Channel*							getChannel(const std::string& name) const;
+
 	private:
 
 	int									port;
@@ -40,6 +43,7 @@ class Ircserv
 
 	std::map<int, Client *>				clients;
 	std::map<std::string, cmd_type>		commands;
+	std::map<std::string, Channel *>	channels;
 };
 
 
@@ -49,5 +53,7 @@ int		user(Client *client, Ircserv& serv, Command& command);
 int		oper(Client *client, Ircserv& serv, Command& command);
 int		mode(Client *client, Ircserv& serv, Command& command);
 int     quit(Client* client, Ircserv& serv, Command& command);
+int		msg(Client *client, Ircserv& serv, Command& command);
+int		join(Client *client, Ircserv& serv, Command& command);
 
 #endif

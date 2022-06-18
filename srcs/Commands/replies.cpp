@@ -7,6 +7,14 @@ std::string    error_replies(int code, Client* client, Ircserv& serv, Command& c
 
     switch (code)
     {
+        case 401:
+            return(command.getParam(0) + ":No such nick/channel");  
+        case 407:
+            return(command.getParam(0) + " :Too many targets");     
+        case 411:
+            return(":No recipient given " + command.getName());    
+        case 412:
+            return(":No text to send");     
         case 431:
             return(":No nickname given");             
         case 432:
