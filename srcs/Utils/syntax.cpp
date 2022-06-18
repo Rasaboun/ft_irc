@@ -10,7 +10,6 @@ int     isspecial(const char& c)
 
 int     is_valid_nickname(const std::string& nickname)
 {
-    std::cout << "Nickname " << nickname << std::endl;
     if (nickname.length() > 9)
         return (0);
     if (!isspecial(nickname[0]) && !isalpha(nickname[0]))

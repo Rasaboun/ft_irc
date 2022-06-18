@@ -26,12 +26,6 @@ Command::Command(std::string& command):
 	}
 }
 
-void Command::exec(Client* client)
-{
-	std::cout << "Executing " << this->name << std::endl;
-	(void)client;
-}
-
 std::string	Command::getPrefix() const { return (this->prefix); }
 std::string	Command::getName() const { return (this->name); }
 const std::vector<std::string>&	Command::getParams() const { return (this->params); }
@@ -43,3 +37,13 @@ const std::string&	Command::getParam(size_t i) const
 }
 
 int			Command::getNbParams() const { return (this->params.size()); }
+
+void		Command::display() const 
+{
+	std::cout << this->getName();
+	for (size_t i = 0; i < params.size(); i++)
+	{
+		std::cout << " " << params[i];
+	}
+	std::cout << std::endl;
+}

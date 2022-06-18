@@ -19,13 +19,13 @@ int	nick(Client *client, Ircserv& serv, Command& command)
 	if (!is_valid_nickname(command.getParam(0)))
 		return (reply(ERR_ERRONEUSNICKNAME, client, serv, command));
 	if (!serv.availableNickname(command.getParam(0)))
-		return (reply(ERR_ALREADYREGISTERED, client, serv, command));
+		return (reply(ERR_NICKNAMEINUSE, client, serv, command));
 
 	client->setNickname(command.getParam(0));
 	if (client->getState() == NEED_NICK)
 	{
+		std::cout << "Sucessful nick\n";
 		client->setState(NEED_USER);
-		return (reply(RPL_WELCOME, client, serv, command));
 	}
 	return (0);
 }
@@ -73,7 +73,7 @@ int	mode(Client *client, Ircserv& serv, Command& command)
 {
 	if (command.getNbParams() < 1)
 		return (reply(ERR_NEEDMOREPARAMS, client, serv, command));
-	if (command.getNbParams() == 1)
+	if (command.getNbParams() == 1 && command.getParam(1) == client->getNickname())
 		return (reply(RPL_UMODEIS, client, serv, command));
 	if (client->getNickname() != command.getParam(0))
 		return (reply(ERR_USERSDONTMATCH, client, serv, command));

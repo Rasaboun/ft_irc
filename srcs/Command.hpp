@@ -16,8 +16,8 @@ class Command
 	const std::vector<std::string>&		getParams() const;
 	const std::string&					getParam(size_t i) const;
 	int									getNbParams() const;
-
-	void								exec(Client* client);
+	
+	void								display() const;
 
 	private:
 

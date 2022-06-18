@@ -46,6 +46,7 @@ class Client
 	int								fd;
 	std::string						data;
 	std::string						hostname;
+	int								state;
 
 	std::string						username;
 	std::string						realname;
@@ -56,7 +57,6 @@ class Client
 
 	void				handle_input(Ircserv& serv);
 
-	int					state;
 };
 
 #endif

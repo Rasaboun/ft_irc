@@ -5,29 +5,45 @@
 
 void	Client::handle_input(Ircserv& serv)
 {
-	for (size_t i = 0; i < commands.size(); i++)
+	int		previous_state = this->state;
+
+	std::vector<Command>::iterator it = commands.begin();
+	while (it != commands.end())
 	{
+		it->display();
 		if (this->state == DCED)
 			return ;
 		if (this->state == NEED_PASS)
 		{
-			if (commands[i].getName() != "PASS")
+			if (it->getName() != "PASS")
+			{
+				it++;
 				continue ;
+			}
 		}
 		else if (this->state == NEED_NICK)
 		{
-			if (commands[i].getName() != "NICK")
+			if (it->getName() != "NICK"){
+
+				it++;
 				continue ;
+			}
 		}
 		else if (this->state == NEED_USER)
 		{
-			if (commands[i].getName() != "USER")
+			if (it->getName() != "USER")
+			{
+				it++;
 				continue ;
+			}
 		}
 		
-		serv.execCommand(this, commands[i]);
+		serv.execCommand(this, *it);
+		this->commands.erase(it);
+		
 	}
-	this->commands.erase(commands.begin(), commands.end());
+	if (this->state != previous_state)
+		handle_input(serv);
 }
 
 void 	Client::receive(Ircserv& serv)
@@ -92,7 +108,6 @@ std::string		Client::getModes() const
 	
 	for(std::map<const char, bool>::const_iterator it = modes.begin(); it != modes.end(); it++)
 	{
-		std::cout << it->first;
 		if (it->second)
 			res += it->first;
 	}
@@ -111,7 +126,12 @@ void				Client::setMode(const char& mode, bool value)
 	this->modes[mode] = value;
 }
 
-Client::Client(int fd, struct sockaddr_in address): fd(fd), state(NEED_NICK)
+Client::Client(int fd, struct sockaddr_in address):
+			fd(fd),
+			state(NEED_NICK),
+			username("*"),
+			realname("*"),
+			nickname("*")
 {
 
 	fcntl(fd, F_SETFL, O_NONBLOCK);

@@ -31,10 +31,11 @@ void 	Ircserv::run()
 {
 	if (poll(&client_fds[0], client_fds.size(), 60 * 1000) == -1)
 		return ;
-	
+	std::cout << clients.size() << " USERS CONNECTED\n";
 	if (client_fds[0].revents == POLLIN)
 	{
 		//accept new connection
+		std::cout << "New client connection\n";
 		struct sockaddr_in client_address;
 		socklen_t csin_len = sizeof(client_address);
 		int client_fd = accept(fd, (struct sockaddr *)&client_address, &csin_len);
