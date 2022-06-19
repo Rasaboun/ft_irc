@@ -74,10 +74,8 @@ void 	Ircserv::run()
 
 void	Ircserv::addChannel(const std::string& name)
 {
-	std::cout << "Here\n";
 	if (this->channels.count(name))
 		return ;
-	std::cout << "Here\n";
 	this->channels[name] = new Channel(this, name);
 }
 

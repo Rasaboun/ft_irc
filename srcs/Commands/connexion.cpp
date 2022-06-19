@@ -13,7 +13,6 @@ int	pass(Client *client, Ircserv& serv, Command& command)
 
 int	nick(Client *client, Ircserv& serv, Command& command)
 {
-	std::cout << "In nick\n";
 	if (command.getNbParams() == 0)
 		return (reply(ERR_NONICKNAMEGIVEN, client, serv, command));
 	if (!is_valid_nickname(command.getParam(0)))
@@ -24,7 +23,6 @@ int	nick(Client *client, Ircserv& serv, Command& command)
 	client->setNickname(command.getParam(0));
 	if (client->getState() == NEED_NICK)
 	{
-		std::cout << "Sucessful nick\n";
 		client->setState(NEED_USER);
 	}
 	return (0);
@@ -33,7 +31,6 @@ int	nick(Client *client, Ircserv& serv, Command& command)
 
 int	user(Client *client, Ircserv& serv, Command& command)
 {
-	std::cout << "In user\n";
 	if (client->getState() != NEED_USER)
 		return (reply(ERR_ALREADYREGISTERED, client, serv, command));
 	if (command.getNbParams() < 4)

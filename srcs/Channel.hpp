@@ -19,12 +19,17 @@ class Channel
     int                             getNbClients() const;
 
     void                            addClient(Client *);
+    void                            removeClient(Client *, const std::string&);
+
+    void                            sendToClients(const std::string&) const;
+    void                            printClients(Client *) const;
+    int                             isClient(Client *) const;
 
     private:
 
     std::string                 name;
     std::string                 topic;
-
+    
     std::vector<Client *>       clients;
     Ircserv*                    serv;
     

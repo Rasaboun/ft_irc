@@ -23,7 +23,8 @@
 #include <vector>
 #include <map>
 
-#define		SERV_NAME	"IRCserv"
+#define		SERV_NAME	    "IRCserv"
+#define     PART_MESSAGE    "Leaving"
 
 class Client    ;
 class Command   ;
@@ -44,14 +45,18 @@ int         	is_valid_mode(const std::string& mode);
 #define     RPL_UMODEIS                 221
 #define     RPL_NOTOPIC                 331
 #define     RPL_TOPIC                   332
+#define     RPL_NAMREPLY                353
+#define     RPL_ENDOFNAMES              366
 
 #define     ERR_NOSUCHNICK              401
+#define     ERR_NOSUCHCHANNEL           403
 #define     ERR_TOOMANYTARGETS          407
 #define     ERR_NORECIPIENT             411
 #define     ERR_NOTEXTTOSEND            412
 #define     ERR_NONICKNAMEGIVEN         431
 #define     ERR_ERRONEUSNICKNAME        432
 #define     ERR_NICKNAMEINUSE           433
+#define     ERR_NOTONCHANNEL            442
 #define     ERR_NEEDMOREPARAMS          461
 #define     ERR_ALREADYREGISTERED       462
 #define     ERR_PASSWDMISMATCH          464

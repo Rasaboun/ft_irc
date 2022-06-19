@@ -9,6 +9,8 @@ std::string    error_replies(int code, Client* client, Ircserv& serv, Command& c
     {
         case 401:
             return(command.getParam(0) + ":No such nick/channel");  
+        case 403:
+            return(command.getParam(0) + ":No such channel");  
         case 407:
             return(command.getParam(0) + " :Too many targets");     
         case 411:
@@ -20,7 +22,9 @@ std::string    error_replies(int code, Client* client, Ircserv& serv, Command& c
         case 432:
             return(command.getParam(0) + " :Erroneous nickname");             
         case 433:
-            return(command.getParam(0) + " :Nickname is already in use");             
+            return(command.getParam(0) + " :Nickname is already in use");      
+        case 442:
+            return(command.getParam(0) + " :You're not on that channel");            
         case 461:
             return(command.getName() + " :Not enough parameters");             
         case 462:
