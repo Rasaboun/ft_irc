@@ -23,13 +23,14 @@
 #include <vector>
 #include <map>
 
-#define		SERV_NAME	    "IRCserv"
+#define		SERV_NAME	    "ircserv"
 #define     PART_MESSAGE    "Leaving"
 
 class Client    ;
 class Command   ;
 class Ircserv   ;
 
+int	            fatal_error(int fd, std::string message);
 int 			error(std::string message);
 int 			syscall_error(std::string message);
 std::string		ft_itoa(int nb);

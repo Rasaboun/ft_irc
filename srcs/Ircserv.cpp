@@ -4,9 +4,9 @@ int		Ircserv::setup()
 {
 	int optval = 1;
 
-	if ((fd = socket(AF_INET, SOCK_STREAM, 0)) == 0)
+	if ((fd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
 		return (syscall_error("socket"));
-	if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &optval, sizeof(optval)))
+	if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &optval, sizeof(optval)) < 0)
 		return (syscall_error("setsockopt"));
 	if (fcntl(fd, F_SETFL, O_NONBLOCK) < 0)
 		return (syscall_error("fcntl"));
@@ -69,8 +69,29 @@ void 	Ircserv::run()
 		}
 		
 	}
+
+	std::map<std::string, Channel *>::iterator ite = channels.begin();
+	while (ite != channels.end())
+	{
+		Channel *channel = (*ite++).second;
+		if (channel && channel->getNbClients() == 0)
+		{
+			removeChannel(channel);
+		}
+	}
 	
 }
+
+void	Ircserv::execCommand(Client* client, Command& command)
+{
+
+	std::map<std::string, Ircserv::cmd_type >::iterator it = commands.find(command.getName());
+
+	if (it == commands.end())
+		return ;
+	(*it->second)(client, *this, command);
+}
+
 
 void	Ircserv::addChannel(const std::string& name)
 {
@@ -96,6 +117,7 @@ void	Ircserv::removeClient(Client* client)
 
 void	Ircserv::removeChannel(Channel* channel)
 {
+	channels.erase(channel->getName());
 	delete channel;
 }
 
@@ -111,15 +133,8 @@ int		Ircserv::availableNickname(const std::string& nickname)
 	return (1);
 }
 
-void	Ircserv::execCommand(Client* client, Command& command)
-{
-
-	std::map<std::string, Ircserv::cmd_type >::iterator it = commands.find(command.getName());
-
-	if (it == commands.end())
-		return ;
-	(*it->second)(client, *this, command);
-}
+void				Ircserv::sendPong(Client* target, const std::string& token) const
+{ target->print(":" + getName() + " PONG " + getName() + " " + token); }
 
 const std::string& 	Ircserv::getPassword() const { return (this->password); }
 const std::string& 	Ircserv::getName() const { return (this->name); }
@@ -159,10 +174,14 @@ Ircserv::Ircserv(int port, const std::string& password):
 	commands["PRIVMSG"] = msg;
 	commands["JOIN"] = join;
 	commands["PART"] = part;
+	commands["PING"] = ping;
+	commands["TOPIC"] = topic;
 }
 
 Ircserv::~Ircserv()
 {
+	if (fd > 0)
+		close(fd);
 	std::map<int, Client*>::iterator it = clients.begin();
 	while (it != clients.end())
 	{

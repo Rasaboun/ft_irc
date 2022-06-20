@@ -29,7 +29,7 @@ int main(int argc, char **argv)
 	int						port;
 
 	if (check_params(argc, argv, &password, &port))
-		return (error("Wrong parameters. Correct usage : ./ircserv <port> <password>"));
+		return (fatal_error(STDERR_FILENO, "Wrong parameters. Correct usage : ./ircserv <port> <password>"));
 	
 	signal(SIGINT, signal_handler);
 

@@ -64,7 +64,6 @@ void 	Client::receive(Ircserv& serv)
 		}
 		buffer[size] = 0;
 		this->data += buffer;
-
 	}
 
 	size_t		position;
@@ -135,7 +134,7 @@ void				Client::setMode(const char& mode, bool value)
 
 Client::Client(int fd, struct sockaddr_in address):
 			fd(fd),
-			state(NEED_NICK),
+			state(NEED_PASS),
 			username("*"),
 			realname("*"),
 			nickname("*")

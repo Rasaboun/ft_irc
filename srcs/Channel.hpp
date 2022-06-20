@@ -12,16 +12,21 @@ class Channel
 	public:
 	
     Channel(Ircserv* serv, const std::string& name);
+    ~Channel();
 
     const std::string&              getName() const;
     const std::string&              getTopic() const;
     const std::vector<Client *>&    getClients() const;
     int                             getNbClients() const;
 
+    void                            setTopic(const std::string&);
+    void                            editTopic(Client*, const std::string&);
+
     void                            addClient(Client *);
     void                            removeClient(Client *, const std::string&);
 
     void                            sendToClients(const std::string&) const;
+    void                            sendTopic(Client *) const;
     void                            printClients(Client *) const;
     int                             isClient(Client *) const;
 

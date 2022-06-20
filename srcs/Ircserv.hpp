@@ -26,6 +26,8 @@ class Ircserv
 	int									isChannel(const std::string& name) const ;
 	int									availableNickname(const std::string& nickname);
 
+	void								sendPong(Client*, const std::string&) const;
+
 	const std::string&					getPassword() const;
 	const std::string&					getName() const;
 	Client*								getClient(const std::string& nickname) const;
@@ -56,5 +58,6 @@ int     quit(Client* client, Ircserv& serv, Command& command);
 int		msg(Client *client, Ircserv& serv, Command& command);
 int		join(Client *client, Ircserv& serv, Command& command);
 int		part(Client *client, Ircserv& serv, Command& command);
-
+int		ping(Client *client, Ircserv& serv, Command& command);
+int		topic(Client *client, Ircserv& serv, Command& command);
 #endif

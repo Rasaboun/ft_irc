@@ -38,6 +38,13 @@ const std::string&	Command::getParam(size_t i) const
 
 int				Command::getNbParams() const { return (this->params.size()); }
 
+void			Command::setParam(size_t pos, const std::string& value)
+{
+	if (pos >= params.size())
+		return ;
+	params[pos] = value;
+}
+
 void			Command::display() const 
 {
 	std::cout << this->getName();

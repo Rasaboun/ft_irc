@@ -8,6 +8,12 @@ int	pass(Client *client, Ircserv& serv, Command& command)
 		return (reply(ERR_NEEDMOREPARAMS, client, serv, command));
 	if (command.getParam(0) == serv.getPassword())
 		client->setState(NEED_NICK);
+	else
+	{
+		reply(ERR_PASSWDMISMATCH, client, serv, command);
+		client->setState(DCED); //Close connection if wrong pass;
+		return (fatal_error(client->getFd(), "Wrong password. Closing connection"));
+	}
 	return (0);
 }
 
@@ -40,6 +46,8 @@ int	user(Client *client, Ircserv& serv, Command& command)
 
 	if (command.getParam(3)[0] != ':')
 		return (client->print("USER :Incorrect realname"));
+	if (command.getParam(3).length() == 1)
+		return (reply(ERR_NEEDMOREPARAMS, client, serv, command));
 	client->setUsername(command.getParam(0));
 	std::string realname = command.getParam(3).substr(1);
 
@@ -54,6 +62,14 @@ int	user(Client *client, Ircserv& serv, Command& command)
 	reply(RPL_CREATED, client, serv, command);
 	reply(RPL_MYINFO, client, serv, command);
 	
+	return (0);
+}
+
+int	ping(Client *client, Ircserv& serv, Command& command)
+{
+	if (command.getNbParams() == 0)
+		return (reply(ERR_NEEDMOREPARAMS, client, serv, command));
+	serv.sendPong(client, command.getParam(0));
 	return (0);
 }
 

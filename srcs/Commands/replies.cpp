@@ -8,9 +8,9 @@ std::string    error_replies(int code, Client* client, Ircserv& serv, Command& c
     switch (code)
     {
         case 401:
-            return(command.getParam(0) + ":No such nick/channel");  
+            return(command.getParam(0) + " :No such nick/channel");  
         case 403:
-            return(command.getParam(0) + ":No such channel");  
+            return(command.getParam(0) + " :No such channel");  
         case 407:
             return(command.getParam(0) + " :Too many targets");     
         case 411:
@@ -43,7 +43,6 @@ std::string    error_replies(int code, Client* client, Ircserv& serv, Command& c
 
 std::string   command_responses(int code, Client* client, Ircserv& serv, Command& command)
 {
-    (void)command;
     switch (code)
     {
         case 001:         

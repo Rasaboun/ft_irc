@@ -17,6 +17,8 @@ class Command
 	const std::string&					getParam(size_t i) const;
 	int									getNbParams() const;
 	
+	void								setParam(size_t, const std::string&);
+
 	void								display() const;
 	std::string							joinParams(size_t pos) const;
 	private:

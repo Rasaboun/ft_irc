@@ -58,28 +58,15 @@ FLAGS =			-Wall -Werror -Wextra -std=c++98
 all:			$(NAME) $(BONUS)
 
 $(NAME) :		$(OBJS)
-			$(CC)  $(HEADERS) $(SRCS) -o $(NAME) $(LIBS) 
+			$(CC)  $(HEADERS) $(SRCS) -o $(NAME) $(LIBS)  && mv $(OBJS) $(DIR_OBJS)
+ 
 
 %.o: %.cpp
 				@$(CC) $(FLAGS) $(HEADERS) -c $< -o $@
 				@echo "Compiled "$<" successfully!"
 
-client:
-		$(CC) $(DIR_SRCS)client.cpp -o client
-
-std:			$(OBJS)
-			$(CC)  $(HEADERS) $(SRCS) -DNAMESPACE=std -o $(NAME) $(LIBS)
-
-
-ft:			$(OBJS)
-			$(CC)  $(HEADERS) $(SRCS) -DNAMESPACE=ft -o $(NAME) $(LIBS) 
-
-norme:
-				norminette $(DIR_SRCS)
-				norminette $(DIR_HEADERS)
-
 clean:
-			$(RM) $(OBJS)
+			$(RM) $(DIR_OBJS)*.o
 
 fclean:		clean
 			$(RM) $(NAME)

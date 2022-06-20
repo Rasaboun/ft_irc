@@ -1,9 +1,11 @@
 #include <iostream>
 #include <string>
+#include <unistd.h>
 
-int error(std::string message)
+int	fatal_error(int fd, std::string message)
 {
-	std::cerr << message << std::endl;
+	message = "ERROR " + message + "\n";
+	write(fd, message.c_str(), message.length());
 	return (1);
 }
 
