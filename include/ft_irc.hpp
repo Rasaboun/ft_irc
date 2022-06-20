@@ -37,6 +37,7 @@ int 			syscall_error(std::string message);
 std::string		ft_itoa(int nb);
 std::string		convert_code(int nb);
 std::string		convert_time(std::time_t* time);
+std::string     reply_prefix(const std::string& source, int code, const std::string& target);
 int         	reply(int code, Client* client, Ircserv& serv, Command& params);
 int         	is_valid_nickname(const std::string& nickname);
 int         	is_valid_mode(const std::string& mode);
@@ -46,6 +47,9 @@ int         	is_valid_mode(const std::string& mode);
 #define		RPL_CREATED					003
 #define		RPL_MYINFO					004
 #define     RPL_UMODEIS                 221
+#define     RPL_LISTSTART               321
+#define     RPL_LIST                    322
+#define     RPL_LISTEND                 323
 #define     RPL_NOTOPIC                 331
 #define     RPL_TOPIC                   332
 #define     RPL_TOPICWHOTIME            333
