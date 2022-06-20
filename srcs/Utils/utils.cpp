@@ -18,3 +18,8 @@ std::string		convert_code(int nb)
 		res = "0" + res;
 	return (res);
 }
+
+std::string		convert_time(std::time_t* time)
+{
+	return (std::asctime(std::localtime(time)));
+}

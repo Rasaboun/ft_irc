@@ -33,7 +33,6 @@ int	part(Client *client, Ircserv& serv, Command& command)
 
 int	topic(Client *client, Ircserv& serv, Command& command)
 {
-	std::cout << "In topic\n";
 	if (command.getNbParams() == 0)
 		return (reply(ERR_NEEDMOREPARAMS, client, serv, command));
     
@@ -42,9 +41,7 @@ int	topic(Client *client, Ircserv& serv, Command& command)
 		return (reply(ERR_NOSUCHCHANNEL, client, serv, command));
     if (!channel->isClient(client))
         return (reply(ERR_NOTONCHANNEL, client, serv, command));
-    
-    std::cout << "In topic\n";
-    
+        
     if (command.getNbParams() == 1)
         channel->sendTopic(client);
     else
@@ -57,6 +54,5 @@ int	topic(Client *client, Ircserv& serv, Command& command)
             channel->editTopic(client, command.joinParams(1));
         }
     }
-	std::cout << "In topic\n";
     return (0);
 }

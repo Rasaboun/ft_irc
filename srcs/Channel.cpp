@@ -24,6 +24,9 @@ void                Channel::setTopic(const std::string& topic){ this->topic = t
 void                Channel::editTopic(Client* editor, const std::string& topic)
 {
     setTopic(topic);
+    topic_editor = editor->getNickname();
+    std::time_t curr_time = std::time(NULL);
+    topic_time = convert_time(&curr_time);
     sendToClients(":" + editor->getNickname() +  " TOPIC " + name + " " + topic);
 }
 
@@ -54,10 +57,16 @@ void                Channel::sendTopic(Client *client) const
     std::string     base = " " + name + " " + name + " :";
  
     if (topic.length())
+    {
         base = ":ircserv " + convert_code(RPL_TOPIC) + base + topic;
+        client->print(base);
+        base = ":ircserv " + convert_code(RPL_TOPICWHOTIME) + " " + client->getFullname() + " " + name + \
+                + " " + topic_editor + " " + topic_time;
+    }
     else
         base = ":ircserv " + convert_code(RPL_NOTOPIC) + base + "No topic is set";
     client->print(base);
+
 }
 
 void                Channel::printClients(Client *target) const

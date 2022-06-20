@@ -34,7 +34,9 @@ class Channel
 
     std::string                 name;
     std::string                 topic;
-    
+    std::string                 topic_editor;
+    std::string                 topic_time;
+
     std::vector<Client *>       clients;
     Ircserv*                    serv;
     
