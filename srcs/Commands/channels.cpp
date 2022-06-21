@@ -56,3 +56,28 @@ int	topic(Client *client, Ircserv& serv, Command& command)
     }
     return (0);
 }
+
+int	list(Client *client, Ircserv& serv, Command& command)
+{
+    reply(RPL_LISTSTART, client, serv, command);
+    if (command.getNbParams() > 0)
+    {
+        for (int i = 0; i < command.getNbParams(); i++)
+        {
+            Channel *channel = serv.getChannel(command.getParam(i));
+            if (!channel)
+                continue ;
+            channel->printInfos(client);
+        }
+    }
+    else
+    {
+        std::map<std::string, Channel *> channels = serv.getChannels();
+        for (std::map<std::string, Channel *>::iterator it = channels.begin(); it != channels.end(); it++)
+        {
+            (*it).second->printInfos(client);
+        }
+    }
+    reply(RPL_LISTEND, client, serv, command);
+    return (0);
+}

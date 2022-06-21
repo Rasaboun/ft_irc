@@ -41,6 +41,8 @@ void	Client::handle_input(Ircserv& serv)
 		this->commands.erase(it);
 		
 	}
+	if (previous_state == NEED_PASS && this->state == previous_state) // If no pass / wrong pass -> close connection
+		this->state = DCED; 
 	if (this->state != previous_state && this->state != DCED) // If successfully registered check other cmds
 		handle_input(serv);
 	sendMessages();
@@ -126,7 +128,12 @@ time_t	Client::getLastPing() const{
 
 void				Client::setUsername(const std::string& new_username) { this->username = new_username; }
 void				Client::setRealname(const std::string& new_realname) { this->realname = new_realname; }
-void				Client::setNickname(const std::string& new_nickname) { this->nickname = new_nickname; }
+void				Client::setNickname(const std::string& new_nickname)
+{
+	print(":" + this->nickname + " NICK " + new_nickname);
+	this->nickname = new_nickname; 
+}
+
 void				Client::setState(const int new_state) { this->state = new_state; }
 void				Client::setMode(const char& mode, bool value)
 {

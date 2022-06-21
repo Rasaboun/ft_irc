@@ -1,6 +1,11 @@
 #include "Ircserv.hpp"
 
-std::string    error_replies(int code, Client* client, Ircserv& serv, Command& command)
+std::string     reply_prefix(const std::string& source, int code, const std::string& target)
+{
+    return (":" + source + " " + convert_code(code) + " " + target + " ");
+}
+
+std::string     error_replies(int code, Client* client, Ircserv& serv, Command& command)
 {
     (void)client;
     (void)serv;
@@ -32,13 +37,13 @@ std::string    error_replies(int code, Client* client, Ircserv& serv, Command& c
         case 464:
             return(":Password incorrect");             
         case 501:
-            return(":Uknown MODE flag");             
+            return(":Unknown MODE flag");             
         case 502:
             return(":Cannot change mode for other users");             
         default:
             break;
     }
-    return (0);
+    return ("");
 }
 
 std::string   command_responses(int code, Client* client, Ircserv& serv, Command& command)
@@ -54,7 +59,11 @@ std::string   command_responses(int code, Client* client, Ircserv& serv, Command
         case 004:         
             return(serv.getName() + " 1.0 (need to add available modes)");         
         case 221:         
-            return("+" + client->getModes()); 
+            return("+" + client->getModes());
+        case 321:
+            return("Channel :Users Name");  
+        case 323:
+            return("End of /LIST");   
         case 331:
             return (command.getParam(0) + " :No topic is set");
         case 332:
@@ -68,10 +77,11 @@ std::string   command_responses(int code, Client* client, Ircserv& serv, Command
 
 int     reply(int code, Client* client, Ircserv& serv, Command& command)
 {
-    std::string     res = ":ircserv " + convert_code(code) + " " + client->getNickname() + " ";
+    std::string     res = reply_prefix(serv.getName(), code, client->getNickname());
+
     if (code > 400)
         res += error_replies(code, client, serv, command);
-    else
+    else 
         res += command_responses(code, client, serv, command);
     client->print(res);
     return (0);

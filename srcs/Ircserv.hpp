@@ -31,8 +31,11 @@ class Ircserv
 
 	const std::string&					getPassword() const;
 	const std::string&					getName() const;
+	const std::string					getPrefix() const;
 	Client*								getClient(const std::string& nickname) const;
 	Channel*							getChannel(const std::string& name) const;
+	std::map<std::string, Channel *>	getChannels() const;
+	int									getNbChannels() const;
 
 	private:
 
@@ -61,4 +64,5 @@ int		join(Client *client, Ircserv& serv, Command& command);
 int		part(Client *client, Ircserv& serv, Command& command);
 int		ping(Client *client, Ircserv& serv, Command& command);
 int		topic(Client *client, Ircserv& serv, Command& command);
+int		list(Client *client, Ircserv& serv, Command& command);
 #endif

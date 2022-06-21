@@ -149,6 +149,7 @@ int					Ircserv::sendPing(Client *client, Ircserv& serv, Command& command)
 
 const std::string& 	Ircserv::getPassword() const { return (this->password); }
 const std::string& 	Ircserv::getName() const { return (this->name); }
+const std::string	Ircserv::getPrefix() const { return (":" + this->name); }
 Client*				Ircserv::getClient(const std::string& nickname) const
 {
 	for (std::map<int, Client *>::const_iterator it = clients.begin(); it != clients.end(); it++)
@@ -169,6 +170,8 @@ Channel*			Ircserv::getChannel(const std::string& name) const
 	return (NULL);
 
 }
+std::map<std::string, Channel *>	Ircserv::getChannels() const { return (this->channels); }
+int				Ircserv::getNbChannels() const { return (channels.size()); }
 
 
 Ircserv::Ircserv(int port, const std::string& password):
@@ -187,6 +190,7 @@ Ircserv::Ircserv(int port, const std::string& password):
 	commands["PART"] = part;
 	commands["PING"] = ping;
 	commands["TOPIC"] = topic;
+	commands["LIST"] = list;
 }
 
 Ircserv::~Ircserv()

@@ -54,32 +54,38 @@ void                Channel::sendToClients(const std::string& message) const
 
 void                Channel::sendTopic(Client *client) const
 {
-    std::string     base = " " + name + " " + name + " :";
- 
+    //std::string     base = " " + name + " " + name + " :";
+    std::string     res;
     if (topic.length())
     {
-        base = ":ircserv " + convert_code(RPL_TOPIC) + base + topic;
-        client->print(base);
-        base = ":ircserv " + convert_code(RPL_TOPICWHOTIME) + " " + client->getFullname() + " " + name + \
+        res = reply_prefix(serv->getName(), RPL_TOPIC, name) + name + " " + topic;
+        client->print(res);
+        res = reply_prefix(serv->getName(), RPL_TOPICWHOTIME, name) + name + \
                 + " " + topic_editor + " " + topic_time;
     }
     else
-        base = ":ircserv " + convert_code(RPL_NOTOPIC) + base + "No topic is set";
-    client->print(base);
+        res = reply_prefix(serv->getName(), RPL_NOTOPIC, name) + name + " No topic is set";
+    client->print(res);
 
 }
 
 void                Channel::printClients(Client *target) const
 {
-    std::string     res = ":ircserv " + convert_code(RPL_NAMREPLY) + " " + target->getNickname() + " = " + name + " :";
+    std::string     res = reply_prefix(serv->getName(), RPL_NAMREPLY, target->getNickname()) + " = " + name + " :";
    
     for (std::vector<Client *>::const_iterator it = clients.begin(); it != clients.end(); it++)
     {
         res += /*client prefix + */ (*it)->getNickname() + " ";
     }
     target->print(res);
-    res = ":ircserv " + convert_code(RPL_ENDOFNAMES) + " " + target->getNickname() + " " + name + " :End of NAMES list";
+    res = reply_prefix(serv->getName(), RPL_ENDOFNAMES, target->getNickname()) + name + " :End of NAMES list";
     target->print(res);
+}
+
+void                Channel::printInfos(Client *client) const
+{
+    std::string res = reply_prefix(serv->getName(), RPL_LIST, client->getNickname());
+    client->print(res + name + " " + ft_itoa(clients.size()) + " :" + topic);
 }
 
 int                 Channel::isClient(Client *client) const
@@ -102,5 +108,5 @@ Channel::Channel(Ircserv*   serv, const std::string& name):
 
 Channel::~Channel()
 {
-    std::cout << "Channel destructor called\n";
+
 }
