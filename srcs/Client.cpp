@@ -120,6 +120,9 @@ std::string		Client::getModes() const
 	return (res);
 }
 
+time_t	Client::getLastPing() const{
+	return lastPing;
+}
 
 void				Client::setUsername(const std::string& new_username) { this->username = new_username; }
 void				Client::setRealname(const std::string& new_realname) { this->realname = new_realname; }
@@ -132,6 +135,7 @@ void				Client::setMode(const char& mode, bool value)
 	this->modes[mode] = value;
 }
 
+void	Client::setLastPing(){ lastPing= std::time(0); }
 Client::Client(int fd, struct sockaddr_in address):
 			fd(fd),
 			state(NEED_PASS),

@@ -134,7 +134,18 @@ int		Ircserv::availableNickname(const std::string& nickname)
 }
 
 void				Ircserv::sendPong(Client* target, const std::string& token) const
-{ target->print(":" + getName() + " PONG " + getName() + " " + token); }
+{ 
+	target->print(":" + getName() + " PONG " + getName() + " " + token); 
+	
+}
+
+
+
+int					Ircserv::sendPing(Client *client, Ircserv& serv, Command& command)
+{
+	time_t now = std::time(0);
+	
+}
 
 const std::string& 	Ircserv::getPassword() const { return (this->password); }
 const std::string& 	Ircserv::getName() const { return (this->name); }

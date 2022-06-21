@@ -34,12 +34,14 @@ class Client
 	const std::string	getFullname() const;
 	bool				getMode(const char& mode) const;
 	std::string			getModes() const;
+	time_t				getLastPing()const;
 
 	void				setState(const int new_state);
 	void				setUsername(const std::string& new_username);
 	void				setRealname(const std::string& new_realname);
 	void				setNickname(const std::string& new_nickname);
 	void				setMode(const char& mode, bool value);
+	void				setLastPing();
 
 	void				addMessage(const Message& message);
 	void				sendMessages();
@@ -59,6 +61,7 @@ class Client
 	std::map<const char, bool>		modes;
 	std::vector<Message>			messages;
 
+	time_t								lastPing;
 	void				handle_input(Ircserv& serv);
 
 };

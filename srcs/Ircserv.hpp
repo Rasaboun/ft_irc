@@ -27,6 +27,7 @@ class Ircserv
 	int									availableNickname(const std::string& nickname);
 
 	void								sendPong(Client*, const std::string&) const;
+	int									sendPing(Client *client, Ircserv& serv, Command& command);
 
 	const std::string&					getPassword() const;
 	const std::string&					getName() const;
