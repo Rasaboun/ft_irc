@@ -135,8 +135,8 @@ int		Ircserv::availableNickname(const std::string& nickname)
 
 void				Ircserv::sendPong(Client* target, const std::string& token) const
 { 
-	target->print(":" + getName() + " PONG " + getName() + " " + token); 
-	
+	target->print("PONG " + token); 
+
 }
 
 
@@ -144,7 +144,17 @@ void				Ircserv::sendPong(Client* target, const std::string& token) const
 int					Ircserv::sendPing(Client *client, Ircserv& serv, Command& command)
 {
 	time_t now = std::time(0);
-	
+
+	for (std::map<int, Client *>::const_iterator it = clients.begin(); it != clients.end(); it++)
+	{
+		if (now - it->second->getLastPing() >= TIMEOUT)
+		{
+			quit(it->second, serv, command);
+		}
+		else{
+			it->second->print("Ping " + getName());
+		}
+	}
 }
 
 const std::string& 	Ircserv::getPassword() const { return (this->password); }

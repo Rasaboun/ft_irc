@@ -4,7 +4,7 @@
 # include "ft_irc.hpp"
 # include "Client.hpp"
 # include "Channel.hpp"
-
+# define	TIMEOUT 120
 
 class Ircserv
 {	
