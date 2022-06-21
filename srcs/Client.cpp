@@ -148,7 +148,8 @@ Client::Client(int fd, struct sockaddr_in address):
 			state(NEED_PASS),
 			username("*"),
 			realname("*"),
-			nickname("*")
+			nickname("*"),
+			lastPing(std::time(0))
 {
 
 	fcntl(fd, F_SETFL, O_NONBLOCK);

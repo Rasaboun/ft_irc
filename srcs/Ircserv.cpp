@@ -34,6 +34,7 @@ void 	Ircserv::run()
 	std::cout << clients.size() << " USERS CONNECTED\n";
 	if (std::time(0) - lastPing >= MYPING)
 	{
+		std::cout << "PING SEND" << std::endl;
 		sendPing();
 		lastPing = std::time(0);
 	}
@@ -142,13 +143,12 @@ int		Ircserv::availableNickname(const std::string& nickname)
 
 void				Ircserv::sendPong(Client* target, const std::string& token) const
 { 
-	target->print("PONG " + token); 
-
+	target->print("PONG " + token);
 }
 
 
 
-int					Ircserv::sendPing()
+void					Ircserv::sendPing()
 {
 	time_t now = std::time(0);
 
@@ -156,6 +156,7 @@ int					Ircserv::sendPing()
 	{
 		if (now - it->second->getLastPing() >= TIMEOUT)
 		{
+			std::cout << "PING TIMEOUT" << std::endl;
 			quit(it->second, *this);
 		}
 		else{
@@ -194,7 +195,8 @@ int				Ircserv::getNbChannels() const { return (channels.size()); }
 Ircserv::Ircserv(int port, const std::string& password):
 		port(port),
 		password(password),
-		name(SERV_NAME)
+		name(SERV_NAME),
+		lastPing(std::time(0))
 {
 	commands["PASS"] = pass;
 	commands["NICK"] = nick;

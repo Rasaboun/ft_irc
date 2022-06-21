@@ -73,6 +73,14 @@ int	ping(Client *client, Ircserv& serv, Command& command)
 	return (0);
 }
 
+int	pong(Client *client, Ircserv& serv, Command& command) //Check Qui est le client ?
+{
+	if (command.getNbParams() == 0)
+		return (reply(ERR_NEEDMOREPARAMS, client, serv, command));
+	serv.sendPong(client, command.getParam(0));
+	return (0);
+}
+
 int	oper(Client *client, Ircserv& serv, Command& command)
 {
 	if (command.getNbParams() < 2)

@@ -4,8 +4,8 @@
 # include "ft_irc.hpp"
 # include "Client.hpp"
 # include "Channel.hpp"
-# define	TIMEOUT 120
-# define	MYPING 60
+# define	TIMEOUT 10
+# define	MYPING 5
 
 class Ircserv
 {	
@@ -28,7 +28,7 @@ class Ircserv
 	int									availableNickname(const std::string& nickname);
 
 	void								sendPong(Client*, const std::string&) const;
-	int									sendPing();
+	void									sendPing();
 
 	const std::string&					getPassword() const;
 	const std::string&					getName() const;
