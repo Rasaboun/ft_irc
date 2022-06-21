@@ -99,9 +99,8 @@ int	mode(Client *client, Ircserv& serv, Command& command)
 	return (0);
 }
 
-int     quit(Client* client, Ircserv& serv, Command& command)
+int     quit(Client* client, Ircserv& serv)
 {
-	(void)command;
 	(void)serv;
     client->setState(DCED);
 	return (0);

@@ -5,6 +5,7 @@
 # include "Client.hpp"
 # include "Channel.hpp"
 # define	TIMEOUT 120
+# define	MYPING 60
 
 class Ircserv
 {	
@@ -27,7 +28,7 @@ class Ircserv
 	int									availableNickname(const std::string& nickname);
 
 	void								sendPong(Client*, const std::string&) const;
-	int									sendPing(Client *client, Ircserv& serv, Command& command);
+	int									sendPing();
 
 	const std::string&					getPassword() const;
 	const std::string&					getName() const;
@@ -42,7 +43,7 @@ class Ircserv
 	int									port;
 	const std::string					password;
 	const std::string					name;
-
+	time_t								lastPing;
 	int									fd;
 	struct sockaddr_in					address;
 	std::vector<pollfd>					client_fds;
@@ -58,7 +59,7 @@ int		nick(Client *client, Ircserv& serv, Command& command);
 int		user(Client *client, Ircserv& serv, Command& command);
 int		oper(Client *client, Ircserv& serv, Command& command);
 int		mode(Client *client, Ircserv& serv, Command& command);
-int     quit(Client* client, Ircserv& serv, Command& command);
+int     quit(Client* client, Ircserv& serv);
 int		msg(Client *client, Ircserv& serv, Command& command);
 int		join(Client *client, Ircserv& serv, Command& command);
 int		part(Client *client, Ircserv& serv, Command& command);

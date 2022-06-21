@@ -32,6 +32,12 @@ void 	Ircserv::run()
 	if (poll(&client_fds[0], client_fds.size(), 60 * 1000) == -1)
 		return ;
 	std::cout << clients.size() << " USERS CONNECTED\n";
+	if (std::time(0) - lastPing >= MYPING)
+	{
+		sendPing();
+		lastPing = std::time(0);
+	}
+	else {
 	if (client_fds[0].revents == POLLIN)
 	{
 		//accept new connection
@@ -58,6 +64,7 @@ void 	Ircserv::run()
 				clients[(*it).fd]->receive(*this);
 			}
 		}
+	}
 	}
 	std::map<int, Client *>::iterator it = clients.begin();
 	while (it != clients.end())
@@ -141,7 +148,7 @@ void				Ircserv::sendPong(Client* target, const std::string& token) const
 
 
 
-int					Ircserv::sendPing(Client *client, Ircserv& serv, Command& command)
+int					Ircserv::sendPing()
 {
 	time_t now = std::time(0);
 
@@ -149,7 +156,7 @@ int					Ircserv::sendPing(Client *client, Ircserv& serv, Command& command)
 	{
 		if (now - it->second->getLastPing() >= TIMEOUT)
 		{
-			quit(it->second, serv, command);
+			quit(it->second, *this);
 		}
 		else{
 			it->second->print("Ping " + getName());
@@ -194,7 +201,7 @@ Ircserv::Ircserv(int port, const std::string& password):
 	commands["USER"] = user;
 	commands["OPER"] = oper;
 	commands["MODE"] = mode;
-	commands["QUIT"] = quit;
+	//commands["QUIT"] = quit;
 	commands["PRIVMSG"] = msg;
 	commands["JOIN"] = join;
 	commands["PART"] = part;
