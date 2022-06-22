@@ -30,7 +30,9 @@ std::string     error_replies(int code, Client* client, Ircserv& serv, Command& 
         case ERR_NICKNAMEINUSE:
             return(command.getParam(0) + " :Nickname is already in use");      
         case ERR_NOTONCHANNEL:
-            return(command.getParam(0) + " :You're not on that channel");            
+            return(command.getParam(0) + " :You're not on that channel");
+        case ERR_USERONCHANNEL:
+            return(command.getParam(0) + " " +  command.getParam(1) + " :is already on channel");                 
         case ERR_NEEDMOREPARAMS:
             return(command.getName() + " :Not enough parameters");             
         case ERR_ALREADYREGISTERED:
@@ -67,11 +69,15 @@ std::string   command_responses(int code, Client* client, Ircserv& serv, Command
         case RPL_LISTSTART:
             return("Channel :Users Name");  
         case RPL_LIST:
-            return("End of /LIST");   
+            return("End of /LIST");      
+        case RPL_CHANNELMODEIS:         
+            return(command.getParam(0) + " " + serv.getChannel(command.getParam(0))->getModes()); // add mode arguments ??
         case RPL_NOTOPIC:
             return (command.getParam(0) + " :No topic is set");
         case RPL_TOPIC:
-            return (command.getParam(0) + " :" + serv.getChannel(command.getParam(0))->getTopic());             
+            return (command.getParam(0) + " :" + serv.getChannel(command.getParam(0))->getTopic());
+        case RPL_INVITING:
+            return (command.getParam(0) + " " + command.getParam(1));             
         default:
             break;
     }

@@ -110,6 +110,7 @@ bool				Client::getMode(const char& mode) const
 		return (false);
 	return (it->second);
 }
+
 std::string		Client::getModes() const
 {
 	std::string res;

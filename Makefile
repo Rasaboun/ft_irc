@@ -7,6 +7,7 @@ SRC =			main.cpp \
 				Commands/connexion.cpp \
 				Commands/messages.cpp \
 				Commands/channels.cpp \
+				Commands/server.cpp \
 				Commands/replies.cpp \
 				Client.cpp \
 				Command.cpp \

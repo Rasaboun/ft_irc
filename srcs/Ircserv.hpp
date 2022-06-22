@@ -4,8 +4,9 @@
 # include "ft_irc.hpp"
 # include "Client.hpp"
 # include "Channel.hpp"
-# define	TIMEOUT 1000
-# define	MYPING 5
+
+# define	TIMEOUT 30
+# define	MYPING 10
 # define	CHANLIMIT 1
 
 class Ircserv
@@ -26,10 +27,11 @@ class Ircserv
 	void								removeChannel(Channel *channel);
 
 	int									isChannel(const std::string& name) const ;
+	bool								isClient(const std::string& name) const;
 	int									availableNickname(const std::string& nickname);
 
 	void								sendPong(Client*, const std::string&) const;
-	void									sendPing();
+	void								sendPing();
 
 	const std::string&					getPassword() const;
 	const std::string&					getName() const;
@@ -60,11 +62,13 @@ int		nick(Client *client, Ircserv& serv, Command& command);
 int		user(Client *client, Ircserv& serv, Command& command);
 int		oper(Client *client, Ircserv& serv, Command& command);
 int		mode(Client *client, Ircserv& serv, Command& command);
-int     quit(Client* client, Ircserv& serv);
+int     quit(Client* client, Ircserv& serv, Command& command);
 int		msg(Client *client, Ircserv& serv, Command& command);
 int		join(Client *client, Ircserv& serv, Command& command);
 int		part(Client *client, Ircserv& serv, Command& command);
 int		ping(Client *client, Ircserv& serv, Command& command);
 int		topic(Client *client, Ircserv& serv, Command& command);
 int		list(Client *client, Ircserv& serv, Command& command);
+int		invite(Client *client, Ircserv& serv, Command& command);
+
 #endif

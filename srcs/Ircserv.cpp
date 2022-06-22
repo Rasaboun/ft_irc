@@ -29,7 +29,7 @@ int		Ircserv::setup()
 
 void 	Ircserv::run()
 {
-	if (poll(&client_fds[0], client_fds.size(), 60 * 1000) == -1)
+	if (poll(&client_fds[0], client_fds.size(), 1 * 1000) == -1)
 		return ;
 	std::cout << clients.size() << " USERS CONNECTED\n";
 	if (std::time(0) - lastPing >= MYPING)
@@ -38,7 +38,6 @@ void 	Ircserv::run()
 		sendPing();
 		lastPing = std::time(0);
 	}
-	else {
 	if (client_fds[0].revents == POLLIN)
 	{
 		//accept new connection
@@ -65,7 +64,6 @@ void 	Ircserv::run()
 				clients[(*it).fd]->receive(*this);
 			}
 		}
-	}
 	}
 	std::map<int, Client *>::iterator it = clients.begin();
 	while (it != clients.end())
@@ -130,7 +128,6 @@ void	Ircserv::removeChannel(Channel* channel)
 }
 
 int		Ircserv::isChannel(const std::string& name) const { return (this->channels.count(name)); }
-
 int		Ircserv::availableNickname(const std::string& nickname)
 {
 	for (std::map<int, Client *>::iterator it = clients.begin(); it != clients.end(); it++)
@@ -157,7 +154,8 @@ void					Ircserv::sendPing()
 		if (now - it->second->getLastPing() >= TIMEOUT)
 		{
 			std::cout << "PING TIMEOUT" << std::endl;
-			quit(it->second, *this);
+			//quit(it->second, *this);
+			it->second->setState(DCED);
 		}
 		else{
 			it->second->print("Ping " + getName());
@@ -203,13 +201,14 @@ Ircserv::Ircserv(int port, const std::string& password):
 	commands["USER"] = user;
 	commands["OPER"] = oper;
 	commands["MODE"] = mode;
-	//commands["QUIT"] = quit;
-	commands["PRIVMSG"] = msg;
+	commands["QUIT"] = quit;
+	//commands["PRIVMSG"] = msg;
 	commands["JOIN"] = join;
 	commands["PART"] = part;
 	commands["PING"] = ping;
 	commands["TOPIC"] = topic;
 	commands["LIST"] = list;
+	commands["INVITE"] = invite;
 }
 
 Ircserv::~Ircserv()

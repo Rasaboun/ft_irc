@@ -35,6 +35,14 @@ int     is_valid_mode(const std::string& mode)
     return (1);
 }
 
+int     is_chan_mode(char mode)
+{
+    if (mode != 'k' && mode != 'i' && mode != 'l' && mode != 'm' && mode != 'n' && \
+        mode != 's' && mode != 't')
+        return (0);
+    return (1);
+}
+
 int     is_valid_channel(const std::string& chan)
 {
     if (chan.length() > 50)

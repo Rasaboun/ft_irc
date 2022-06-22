@@ -108,3 +108,24 @@ int	list(Client *client, Ircserv& serv, Command& command)
     reply(RPL_LISTEND, client, serv, command);
     return (0);
 }
+
+int	invite(Client *client, Ircserv& serv, Command& command)
+{
+	if (command.getNbParams() < 2)
+		return (reply(ERR_NEEDMOREPARAMS, client, serv, command));
+    Channel* channel = serv.getChannel(command.getParam(1));
+    if (!channel)
+		return (reply(ERR_NOSUCHCHANNEL, client, serv, command));
+    if (serv.availableNickname(command.getParam(0)))
+		return (reply(ERR_NOSUCHNICK, client, serv, command));
+
+    if (!channel->isClient(client))
+        return (reply(ERR_NOTONCHANNEL, client, serv, command));
+    if (channel->getMode(INVITE) && !channel->isOperator(client))
+        return (reply(ERR_CHANOPRIVISNEEDED, client, serv, command));
+    if (channel->isClient(serv.getClient(command.getParam(0))))
+        return (reply(ERR_USERONCHANNEL, client, serv, command));
+    reply(RPL_INVITING, client, serv, command);
+    channel->invite(client, command.getParam(0));
+    return (0);
+}

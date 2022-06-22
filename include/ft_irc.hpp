@@ -59,6 +59,7 @@ int         	            reply(int code, Client* client, Ircserv& serv, Command&
 int         	            is_valid_nickname(const std::string& nickname);
 int         	            is_valid_mode(const std::string& mode);
 int                         is_valid_channel(const std::string& chan);
+int                         is_chan_mode(char mode);
 std::vector<std::string>	split(std::string param, char c);
 
 #define		RPL_WELCOME					001
@@ -69,9 +70,11 @@ std::vector<std::string>	split(std::string param, char c);
 #define     RPL_LISTSTART               321
 #define     RPL_LIST                    322
 #define     RPL_LISTEND                 323
+#define     RPL_CHANNELMODEIS           324
 #define     RPL_NOTOPIC                 331
 #define     RPL_TOPIC                   332
 #define     RPL_TOPICWHOTIME            333
+#define     RPL_INVITING                341
 #define     RPL_NAMREPLY                353
 #define     RPL_ENDOFNAMES              366
 
@@ -85,9 +88,11 @@ std::vector<std::string>	split(std::string param, char c);
 #define     ERR_ERRONEUSNICKNAME        432
 #define     ERR_NICKNAMEINUSE           433
 #define     ERR_NOTONCHANNEL            442
+#define     ERR_USERONCHANNEL           443
 #define     ERR_NEEDMOREPARAMS          461
 #define     ERR_ALREADYREGISTERED       462
 #define     ERR_PASSWDMISMATCH          464
+#define     ERR_INVITEONLYCHAN          473
 #define     ERR_BADCHANNELKEY           475
 #define     ERR_CHANOPRIVISNEEDED       482
 #define     ERR_UMODEUNKNOWNFLAG        501
