@@ -13,8 +13,8 @@ class Command
 
 	std::string							getPrefix() const;
 	std::string							getName() const;
-	const std::vector<std::string>&		getParams() const;
-	const std::string&					getParam(size_t i) const;
+	std::vector<std::string>			getParams();
+	const std::string					getParam(size_t i) const;
 	int									getNbParams() const;
 	
 	void								setParam(size_t, const std::string&);

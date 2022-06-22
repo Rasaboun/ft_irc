@@ -5,40 +5,43 @@ std::string     reply_prefix(const std::string& source, int code, const std::str
     return (":" + source + " " + convert_code(code) + " " + target + " ");
 }
 
-std::string     error_replies(int code, Client* client, Ircserv& serv, Command& command)
+std::string     error_replies(int code, Client* client, Ircserv& serv, Command& command, std::string param)
 {
     (void)client;
     (void)serv;
-
     switch (code)
     {
-        case 401:
+        case ERR_NOSUCHNICK:
             return(command.getParam(0) + " :No such nick/channel");  
-        case 403:
-            return(command.getParam(0) + " :No such channel");  
-        case 407:
+        case ERR_NOSUCHCHANNEL:
+            return(command.getParam(0) + " :No such channel");
+        case ERR_TOOMANYCHANNELS:
+            return (param + " :You have joined too many channels");  
+        case ERR_TOOMANYTARGETS:
             return(command.getParam(0) + " :Too many targets");     
-        case 411:
+        case ERR_NORECIPIENT:
             return(":No recipient given " + command.getName());    
-        case 412:
+        case ERR_NOTEXTTOSEND:
             return(":No text to send");     
-        case 431:
+        case ERR_NONICKNAMEGIVEN:
             return(":No nickname given");             
-        case 432:
+        case ERR_ERRONEUSNICKNAME:
             return(command.getParam(0) + " :Erroneous nickname");             
-        case 433:
+        case ERR_NICKNAMEINUSE:
             return(command.getParam(0) + " :Nickname is already in use");      
-        case 442:
+        case ERR_NOTONCHANNEL:
             return(command.getParam(0) + " :You're not on that channel");            
-        case 461:
+        case ERR_NEEDMOREPARAMS:
             return(command.getName() + " :Not enough parameters");             
-        case 462:
+        case ERR_ALREADYREGISTERED:
             return(":Unautorized command (already registered)");             
-        case 464:
-            return(":Password incorrect");             
-        case 501:
+        case ERR_PASSWDMISMATCH:
+            return(":Password incorrect");        
+        case ERR_CHANOPRIVISNEEDED:
+            return(command.getParam(0) + " :You're not channel operator");                 
+        case ERR_UMODEUNKNOWNFLAG:
             return(":Unknown MODE flag");             
-        case 502:
+        case ERR_USERSDONTMATCH:
             return(":Cannot change mode for other users");             
         default:
             break;
@@ -46,43 +49,44 @@ std::string     error_replies(int code, Client* client, Ircserv& serv, Command& 
     return ("");
 }
 
-std::string   command_responses(int code, Client* client, Ircserv& serv, Command& command)
+std::string   command_responses(int code, Client* client, Ircserv& serv, Command& command, const std::string& param)
 {
+    (void)param;
     switch (code)
     {
-        case 001:         
+        case RPL_WELCOME:         
             return("Welcome to the Internet Relay Network " + client->getFullname());         
-        case 002:         
+        case RPL_YOURHOST:         
             return("Your host is " + serv.getName() + ", running version 1.0");         
-        case 003:         
+        case RPL_CREATED:         
             return("This server was created today");   //Need to add correct date      
-        case 004:         
+        case RPL_MYINFO:         
             return(serv.getName() + " 1.0 (need to add available modes)");         
-        case 221:         
+        case RPL_UMODEIS:         
             return("+" + client->getModes());
-        case 321:
+        case RPL_LISTSTART:
             return("Channel :Users Name");  
-        case 323:
+        case RPL_LIST:
             return("End of /LIST");   
-        case 331:
+        case RPL_NOTOPIC:
             return (command.getParam(0) + " :No topic is set");
-        case 332:
+        case RPL_TOPIC:
             return (command.getParam(0) + " :" + serv.getChannel(command.getParam(0))->getTopic());             
         default:
             break;
     }
-    return (0);
+    return ("");
 }
 
 
-int     reply(int code, Client* client, Ircserv& serv, Command& command)
+int     reply(int code, Client* client, Ircserv& serv, Command& command, const std::string& param)
 {
     std::string     res = reply_prefix(serv.getName(), code, client->getNickname());
-
+    (void) param;
     if (code > 400)
-        res += error_replies(code, client, serv, command);
+        res += error_replies(code, client, serv, command, param);
     else 
-        res += command_responses(code, client, serv, command);
+        res += command_responses(code, client, serv, command, param);
     client->print(res);
     return (0);
 }

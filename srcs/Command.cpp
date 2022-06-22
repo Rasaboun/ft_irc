@@ -28,11 +28,11 @@ Command::Command(std::string& command):
 
 std::string	Command::getPrefix() const { return (this->prefix); }
 std::string	Command::getName() const { return (this->name); }
-const std::vector<std::string>&	Command::getParams() const { return (this->params); }
-const std::string&	Command::getParam(size_t i) const 
+std::vector<std::string>	Command::getParams() { return (this->params); }
+const std::string	Command::getParam(size_t i) const 
 {
 	if (i >= this->params.size())
-		return (this->params[0]);
+		return (std::string());
 	return (this->params[i]);
 }
 

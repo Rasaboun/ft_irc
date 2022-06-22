@@ -4,8 +4,9 @@
 # include "ft_irc.hpp"
 # include "Client.hpp"
 # include "Channel.hpp"
-# define	TIMEOUT 10
+# define	TIMEOUT 1000
 # define	MYPING 5
+# define	CHANLIMIT 1
 
 class Ircserv
 {	

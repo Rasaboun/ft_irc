@@ -16,13 +16,15 @@ class Channel
 
     const std::string&              getName() const;
     const std::string&              getTopic() const;
+    const std::string&              getKey() const;
+    bool                            getMode(char) const;
     const std::vector<Client *>&    getClients() const;
     int                             getNbClients() const;
 
     void                            setTopic(const std::string&);
     void                            editTopic(Client*, const std::string&);
 
-    void                            addClient(Client *);
+    void                            addClient(Client *, const std::string& key = std::string());
     void                            removeClient(Client *, const std::string&);
 
     void                            sendToClients(const std::string&) const;
@@ -30,16 +32,18 @@ class Channel
     void                            printClients(Client *) const;
     void                            printInfos(Client * ) const;
     int                             isClient(Client *) const;
-
+    bool                            isOperator(Client *) const;
     private:
 
-    std::string                 name;
-    std::string                 topic;
-    std::string                 topic_editor;
-    std::string                 topic_time;
+    std::string                     name;
+    std::string                     topic;
+    std::string                     key;
+    std::string                     topic_editor;
+    std::string                     topic_time;
 
-    std::vector<Client *>       clients;
-    Ircserv*                    serv;
+    std::vector<Client *>        clients;
+    Ircserv*                        serv;
+	std::map<const char, bool>		modes;
     
 };
 

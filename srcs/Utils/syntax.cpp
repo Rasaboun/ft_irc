@@ -27,10 +27,24 @@ int     is_valid_mode(const std::string& mode)
 {
     if (mode.length() != 2)
         return (0);
-    if (mode[0] != '+' && mode[1] != '-')
+    if (mode[0] != '+' && mode[0] != '-')
         return (0);
     if (mode[1] != 'a' && mode[1] != 'i' && mode[1] != 'w' && mode[1] != 'r' && mode[1] != 'o' \
                         && mode[1] != 'O' && mode[1] != 's')
         return (0);
+    return (1);
+}
+
+int     is_valid_channel(const std::string& chan)
+{
+    if (chan.length() > 50)
+        return (0);
+    if (chan[0] != '#')
+        return (0);
+    for (size_t i = 1; i < chan.length(); i++)
+    {
+        if (chan[i] == 7 || chan[i] == ' ')
+            return (0);
+    }
     return (1);
 }

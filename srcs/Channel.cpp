@@ -3,12 +3,28 @@
 
 const std::string&  Channel::getName() const { return (this->name); }
 const std::string&  Channel::getTopic() const { return (this->topic); }
+const std::string&  Channel::getKey() const { return (this->key); }
+bool                Channel::getMode(char mode) const 
+{ 
+    std::map<const char, bool>::const_iterator it = this->modes.find(mode);
+
+	if (it == this->modes.end())
+		return (false);
+	return (it->second); 
+}
 const std::vector<Client *>&    Channel::getClients() const { return (this->clients); }
 int                 Channel::getNbClients() const { return (this->clients.size()); }
 
-void                Channel::addClient(Client* client)
-{        
+void                Channel::addClient(Client* client, const std::string& key)
+{
+
+    if (modes[KEY] && key != this->key)
+    {
+        client->print(reply_prefix(serv->getName(), ERR_BADCHANNELKEY, client->getNickname()) + name + ":Cannot join channel (+k)");
+    }
+       
     //Send join to all channel's clients
+    client->addChannel(name, VOICE);
     clients.push_back(client);
     sendToClients(":" + client->getFullname() + " JOIN " + name);
 
@@ -38,6 +54,7 @@ void                Channel::removeClient(Client *client, const std::string& mes
         {
             sendToClients(":" + client->getFullname()+ " PART " + name + " " + message);
             clients.erase(it);
+            client->removeChannel(name);
             break ;
         }
     }
@@ -54,7 +71,6 @@ void                Channel::sendToClients(const std::string& message) const
 
 void                Channel::sendTopic(Client *client) const
 {
-    //std::string     base = " " + name + " " + name + " :";
     std::string     res;
     if (topic.length())
     {
@@ -99,11 +115,26 @@ int                 Channel::isClient(Client *client) const
 
 }
 
+bool                Channel::isOperator(Client * client) const
+{
+    char perm = client->getChanPerm(name);
+    std::cout << perm << std::endl;
+    if (perm == OPERATOR || perm == PROTECTED || perm == FOUNDER)
+        return (true);
+    return (false);
+}
+
 Channel::Channel(Ircserv*   serv, const std::string& name):
                 name(name),
                 serv(serv)
 {
-    (void)this->serv;
+    modes['i'] = false;
+	modes['k'] = false;
+	modes['l'] = false;
+	modes['m'] = false;
+	modes['n'] = false;
+	modes['s'] = false;
+	modes['t'] = true;
 }
 
 Channel::~Channel()
