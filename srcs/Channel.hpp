@@ -25,6 +25,7 @@ class Channel
     void                            editTopic(Client*, const std::string&);
 
     void                            addClient(Client *, const std::string& key = std::string());
+    void                            addOperator(Client *);
     void                            removeClient(Client *, const std::string&);
 
     void                            sendToClients(const std::string&) const;
@@ -41,7 +42,9 @@ class Channel
     std::string                     topic_editor;
     std::string                     topic_time;
 
-    std::vector<Client *>        clients;
+    std::vector<Client *>           clients;
+    std::vector<Client *>           operators;
+    std::vector<Client *>           invited;
     Ircserv*                        serv;
 	std::map<const char, bool>		modes;
     

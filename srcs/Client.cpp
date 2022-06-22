@@ -122,16 +122,6 @@ std::string		Client::getModes() const
 	return (res);
 }
 
-char				Client::getChanPerm(const std::string& channel) const
-{	
-	std::map<std::string, char>::const_iterator it = this->channels.find(channel);
-
-	if (it == this->channels.end())
-		return (false);
-	return (it->second);
-
-}
-
 int					Client::getNbChannels() const { return (channels.size()); }
 
 time_t				Client::getLastPing() const{
@@ -154,7 +144,6 @@ void				Client::setMode(const char& mode, bool value)
 	this->modes[mode] = value;
 }
 
-void				Client::setPerm(const std::string& channel, char perm) { channels[channel] = perm; }
 
 void	Client::setLastPing(){ lastPing= std::time(0); }
 Client::Client(int fd, struct sockaddr_in address):
@@ -183,12 +172,12 @@ Client::Client(int fd, struct sockaddr_in address):
 }
 
 void		Client::addMessage(const Message& message) { messages.push_back(message); }
-void		Client::addChannel(const std::string& channel, char mode) { channels[channel] = mode; }
+void		Client::addChannel(const std::string& channel) { channels.push_back(channel); }
 void		Client::removeChannel(const std::string& channel)
 {
-	for (std::map<std::string, char>::iterator it = channels.begin(); it != channels.end(); it++)
+	for (std::vector<std::string>::iterator it = channels.begin(); it != channels.end(); it++)
 	{
-		if ((*it).first == channel)
+		if ((*it) == channel)
 		{
 			channels.erase(it);
 			return ;

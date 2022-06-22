@@ -24,15 +24,18 @@ void                Channel::addClient(Client* client, const std::string& key)
     }
        
     //Send join to all channel's clients
-    client->addChannel(name, VOICE);
+    client->addChannel(name);
     clients.push_back(client);
     sendToClients(":" + client->getFullname() + " JOIN " + name);
 
-    sendTopic(client);
+    if (topic.length())
+        sendTopic(client);
 
     printClients(client);
     
 }
+
+void                Channel::addOperator(Client* client) { operators.push_back(client); }
 
 void                Channel::setTopic(const std::string& topic){ this->topic = topic; } 
 
@@ -43,6 +46,7 @@ void                Channel::editTopic(Client* editor, const std::string& topic)
     topic_editor = editor->getNickname();
     std::time_t curr_time = std::time(NULL);
     topic_time = convert_time(&curr_time);
+    std::cout << "topic time " << topic_time << std::endl;
     sendToClients(":" + editor->getNickname() +  " TOPIC " + name + " " + topic);
 }
 
@@ -74,24 +78,24 @@ void                Channel::sendTopic(Client *client) const
     std::string     res;
     if (topic.length())
     {
-        res = reply_prefix(serv->getName(), RPL_TOPIC, name) + name + " " + topic;
+        res = reply_prefix(serv->getName(), RPL_TOPIC, client->getFullname()) + name + " " + topic;
         client->print(res);
-        res = reply_prefix(serv->getName(), RPL_TOPICWHOTIME, name) + name + \
-                + " " + topic_editor + " " + topic_time;
+        res = reply_prefix(serv->getName(), RPL_TOPICWHOTIME, client->getFullname()) + name + \
+                + " " + topic_editor + " :" + topic_time;
     }
     else
-        res = reply_prefix(serv->getName(), RPL_NOTOPIC, name) + name + " No topic is set";
+        res = reply_prefix(serv->getName(), RPL_NOTOPIC, client->getFullname()) + name + " No topic is set";
     client->print(res);
 
 }
 
 void                Channel::printClients(Client *target) const
 {
-    std::string     res = reply_prefix(serv->getName(), RPL_NAMREPLY, target->getNickname()) + " = " + name + " :";
+    std::string     res = reply_prefix(serv->getName(), RPL_NAMREPLY, target->getNickname()) + "= " + name + " :";
    
     for (std::vector<Client *>::const_iterator it = clients.begin(); it != clients.end(); it++)
     {
-        res += /*client prefix + */ (*it)->getNickname() + " ";
+        res += /*client prefix + */(*it)->getNickname() + " ";
     }
     target->print(res);
     res = reply_prefix(serv->getName(), RPL_ENDOFNAMES, target->getNickname()) + name + " :End of NAMES list";
@@ -117,10 +121,11 @@ int                 Channel::isClient(Client *client) const
 
 bool                Channel::isOperator(Client * client) const
 {
-    char perm = client->getChanPerm(name);
-    std::cout << perm << std::endl;
-    if (perm == OPERATOR || perm == PROTECTED || perm == FOUNDER)
-        return (true);
+    for (std::vector<Client *>::const_iterator it = operators.begin(); it != operators.end(); it++)
+    {
+        if (*it == client)
+            return (true);
+    }
     return (false);
 }
 

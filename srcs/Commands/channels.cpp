@@ -31,7 +31,7 @@ int	join(Client *client, Ircserv& serv, Command& command)
             key_it++;
         }
         if (new_chan)
-            client->setPerm(*it, FOUNDER);
+            serv.getChannel(*it)->addOperator(client);
     }
     return (0);
 }
@@ -78,7 +78,6 @@ int	topic(Client *client, Ircserv& serv, Command& command)
             channel->setTopic("");
         else
         {
-            command.setParam(1, command.getParam(1).substr(1));
             channel->editTopic(client, command.joinParams(1));
         }
     }
