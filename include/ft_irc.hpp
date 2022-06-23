@@ -26,6 +26,7 @@
 
 #define		SERV_NAME	    "ircserv"
 #define     PART_MESSAGE    "Leaving"
+#define     KICK_MESSAGE    "Kicked"
 
 //Channel modes
 #define     KEY         'k'
@@ -87,6 +88,7 @@ std::vector<std::string>	split(std::string param, char c);
 #define     ERR_NONICKNAMEGIVEN         431
 #define     ERR_ERRONEUSNICKNAME        432
 #define     ERR_NICKNAMEINUSE           433
+#define     ERR_USERNOTINCHANNEL        441
 #define     ERR_NOTONCHANNEL            442
 #define     ERR_USERONCHANNEL           443
 #define     ERR_NEEDMOREPARAMS          461

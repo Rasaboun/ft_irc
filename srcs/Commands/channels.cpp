@@ -21,6 +21,8 @@ int	join(Client *client, Ircserv& serv, Command& command)
             serv.addChannel(*it);
             new_chan = 1;
         }
+        if (new_chan)
+            serv.getChannel(*it)->addOperator(client);
         if (key_it == keys.end())
         {
             serv.getChannel(*it)->addClient(client);
@@ -30,8 +32,6 @@ int	join(Client *client, Ircserv& serv, Command& command)
             serv.getChannel(*it)->addClient(client, *key_it);
             key_it++;
         }
-        if (new_chan)
-            serv.getChannel(*it)->addOperator(client);
     }
     return (0);
 }
@@ -41,17 +41,28 @@ int	part(Client *client, Ircserv& serv, Command& command)
 	if (command.getNbParams() == 0)
 		return (reply(ERR_NEEDMOREPARAMS, client, serv, command));
     
-    Channel* channel = serv.getChannel(command.getParam(0));
-    if (!channel)
-		return (reply(ERR_NOSUCHCHANNEL, client, serv, command));
-    if (!channel->isClient(client))
-        return (reply(ERR_NOTONCHANNEL, client, serv, command));
+    std::vector<std::string> channels = split(command.getParam(0), ',');
+    
 
-    if (command.getNbParams() > 1)
-        channel->removeClient(client, command.joinParams(1));
-    else
-        channel->removeClient(client, PART_MESSAGE);
-
+    for (std::vector<std::string>::iterator it = channels.begin(); it != channels.end(); it++)
+    {
+        Channel* channel = serv.getChannel(*it);
+        
+        if (!channel)
+        {
+		    reply(ERR_NOSUCHCHANNEL, client, serv, command, *it);
+            continue ;
+        }
+        if (!channel->isClient(client))
+        {
+            reply(ERR_NOTONCHANNEL, client, serv, command, *it);
+            continue ;
+        }
+        if (command.getNbParams() > 1)
+            channel->removeClient(client, command.joinParams(1));
+        else
+            channel->removeClient(client, PART_MESSAGE);
+    }
     return (0);
 }
 
@@ -62,9 +73,9 @@ int	topic(Client *client, Ircserv& serv, Command& command)
     
     Channel* channel = serv.getChannel(command.getParam(0));
     if (!channel)
-		return (reply(ERR_NOSUCHCHANNEL, client, serv, command));
+		return (reply(ERR_NOSUCHCHANNEL, client, serv, command, command.getParam(0)));
     if (!channel->isClient(client))
-        return (reply(ERR_NOTONCHANNEL, client, serv, command));
+        return (reply(ERR_NOTONCHANNEL, client, serv, command, command.getParam(0)));
         
     if (command.getNbParams() == 1)
         channel->sendTopic(client);
@@ -89,10 +100,13 @@ int	list(Client *client, Ircserv& serv, Command& command)
     reply(RPL_LISTSTART, client, serv, command);
     if (command.getNbParams() > 0)
     {
-        for (int i = 0; i < command.getNbParams(); i++)
+        std::vector<std::string> channels = split(command.getParam(0), ',');
+    
+
+        for (std::vector<std::string>::iterator it = channels.begin(); it != channels.end(); it++)
         {
-            Channel *channel = serv.getChannel(command.getParam(i));
-            if (!channel)
+            Channel* channel = serv.getChannel(*it);
+            if (!channel || (channel->getMode(SECRET) && !channel->isClient(client)))
                 continue ;
             channel->printInfos(client);
         }
@@ -102,6 +116,8 @@ int	list(Client *client, Ircserv& serv, Command& command)
         std::map<std::string, Channel *> channels = serv.getChannels();
         for (std::map<std::string, Channel *>::iterator it = channels.begin(); it != channels.end(); it++)
         {
+            if ((*it).second->getMode(SECRET) && !(*it).second->isClient(client))
+                continue ;
             (*it).second->printInfos(client);
         }
     }
@@ -115,17 +131,53 @@ int	invite(Client *client, Ircserv& serv, Command& command)
 		return (reply(ERR_NEEDMOREPARAMS, client, serv, command));
     Channel* channel = serv.getChannel(command.getParam(1));
     if (!channel)
-		return (reply(ERR_NOSUCHCHANNEL, client, serv, command));
+		return (reply(ERR_NOSUCHCHANNEL, client, serv, command, command.getParam(1)));
     if (serv.availableNickname(command.getParam(0)))
 		return (reply(ERR_NOSUCHNICK, client, serv, command));
 
     if (!channel->isClient(client))
-        return (reply(ERR_NOTONCHANNEL, client, serv, command));
+        return (reply(ERR_NOTONCHANNEL, client, serv, command, command.getParam(1)));
     if (channel->getMode(INVITE) && !channel->isOperator(client))
         return (reply(ERR_CHANOPRIVISNEEDED, client, serv, command));
     if (channel->isClient(serv.getClient(command.getParam(0))))
         return (reply(ERR_USERONCHANNEL, client, serv, command));
     reply(RPL_INVITING, client, serv, command);
     channel->invite(client, command.getParam(0));
+    return (0);
+}
+
+int	kick(Client *client, Ircserv& serv, Command& command)
+{
+	if (command.getNbParams() < 2)
+		return (reply(ERR_NEEDMOREPARAMS, client, serv, command));
+    
+    Channel* channel = serv.getChannel(command.getParam(0));
+    if (!channel)
+		return (reply(ERR_NOSUCHCHANNEL, client, serv, command, command.getParam(0)));
+    if (!channel->isClient(client))
+        return (reply(ERR_NOTONCHANNEL, client, serv, command, command.getParam(0)));
+    if (!channel->isOperator(client))
+        return (reply(ERR_CHANOPRIVISNEEDED, client, serv, command));
+    
+    std::vector<std::string> targets = split(command.getParam(1), ',');
+    
+    for (std::vector<std::string>::iterator it = targets.begin(); it != targets.end(); it++)
+    {
+        Client *target = serv.getClient(*it);
+        
+        if (!target)
+            continue ;
+        if (!channel->isClient(target))
+            return (reply(ERR_USERNOTINCHANNEL, client, serv, command, client->getNickname()));
+        if (command.getNbParams() > 2)
+        {
+            if (command.getParam(2) != ":")
+            {
+                channel->kickClient(client, target, command.joinParams(2));
+                continue ;
+            }
+        }
+        channel->kickClient(client, target, KICK_MESSAGE);
+    }
     return (0);
 }

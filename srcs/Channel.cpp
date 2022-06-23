@@ -87,12 +87,30 @@ void                Channel::changeModes(Client *client, const std::string& mode
         sendToClients(":" + client->getFullname() + " MODE " + name + " " + res);
 
 }
+
+void                Channel::kickClient(Client *client, Client *target, const std::string& message)
+{
+    for (std::vector<Client *>::iterator it = clients.begin(); it != clients.end(); it++)
+    {
+        if (*it == target)
+        {   
+            sendToClients(":" + client->getFullname()+ " KICK " + name + " " + target->getNickname() \
+                            + " " + message);
+            clients.erase(it);
+            target->removeChannel(name);
+            break ;
+        }
+    }
+    removeOperator(target);
+    removeInvite(target);
+}
+
 void                Channel::removeClient(Client *client, const std::string& message)
 {
     for (std::vector<Client *>::iterator it = clients.begin(); it != clients.end(); it++)
     {
         if (*it == client)
-        {
+        {   
             sendToClients(":" + client->getFullname()+ " PART " + name + " " + message);
             clients.erase(it);
             client->removeChannel(name);
@@ -159,7 +177,9 @@ void                Channel::printClients(Client *target) const
    
     for (std::vector<Client *>::const_iterator it = clients.begin(); it != clients.end(); it++)
     {
-        res += /*client prefix + */(*it)->getNickname() + " ";
+        if (isOperator(*it))
+            res += "@";
+        res += (*it)->getNickname() + " ";
     }
     target->print(res);
     res = reply_prefix(serv->getName(), RPL_ENDOFNAMES, target->getNickname()) + name + " :End of NAMES list";

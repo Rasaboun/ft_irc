@@ -5,9 +5,9 @@
 # include "Client.hpp"
 # include "Channel.hpp"
 
-# define	TIMEOUT 30
-# define	MYPING 10
-# define	CHANLIMIT 1
+# define	TIMEOUT 300
+# define	MYPING 30
+# define	CHANLIMIT 10
 
 class Ircserv
 {	
@@ -70,5 +70,5 @@ int		ping(Client *client, Ircserv& serv, Command& command);
 int		topic(Client *client, Ircserv& serv, Command& command);
 int		list(Client *client, Ircserv& serv, Command& command);
 int		invite(Client *client, Ircserv& serv, Command& command);
-
+int		kick(Client *client, Ircserv& serv, Command& command);
 #endif

@@ -29,7 +29,7 @@ int		Ircserv::setup()
 
 void 	Ircserv::run()
 {
-	if (poll(&client_fds[0], client_fds.size(), 1 * 1000) == -1)
+	if (poll(&client_fds[0], client_fds.size(), 5 * 1000) == -1)
 		return ;
 	std::cout << clients.size() << " USERS CONNECTED\n";
 	if (std::time(0) - lastPing >= MYPING)
@@ -202,13 +202,14 @@ Ircserv::Ircserv(int port, const std::string& password):
 	commands["OPER"] = oper;
 	commands["MODE"] = mode;
 	commands["QUIT"] = quit;
-	//commands["PRIVMSG"] = msg;
+	commands["PRIVMSG"] = msg;
 	commands["JOIN"] = join;
 	commands["PART"] = part;
 	commands["PING"] = ping;
 	commands["TOPIC"] = topic;
 	commands["LIST"] = list;
 	commands["INVITE"] = invite;
+	commands["KICK"] = kick;
 }
 
 Ircserv::~Ircserv()

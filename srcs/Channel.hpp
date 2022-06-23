@@ -30,6 +30,7 @@ class Channel
     
     void                            addClient(Client *, const std::string& key = std::string());
     void                            addOperator(Client *);
+    void                            kickClient(Client *, Client *, const std::string&);
     void                            removeClient(Client *, const std::string&);
     void                            removeInvite(Client *);
     void                            removeOperator(Client *);
