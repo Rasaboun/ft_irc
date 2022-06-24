@@ -3,7 +3,7 @@
 
 # define BUFFER_SIZE 1024
 
-void	Client::handle_input(Ircserv& serv)
+void					Client::handle_input(Ircserv& serv)
 {
 	int		previous_state = this->state;
 
@@ -41,14 +41,14 @@ void	Client::handle_input(Ircserv& serv)
 		this->commands.erase(it);
 		
 	}
-	if (previous_state == NEED_PASS && this->state == previous_state) // If no pass / wrong pass -> close connection
+	if (this->failedPass == true) // If wrong pass -> close connection
 		this->state = DCED; 
 	if (this->state != previous_state && this->state != DCED) // If successfully registered check other cmds
 		handle_input(serv);
 	sendMessages();
 }
 
-void 	Client::receive(Ircserv& serv)
+void 						Client::receive(Ircserv& serv)
 {	
 	std::string crlf("\r\n");
 
@@ -80,14 +80,14 @@ void 	Client::receive(Ircserv& serv)
 	handle_input(serv);
 }
 
-void	Client::sendMessages()
+void						Client::sendMessages()
 {
 	for (std::vector<Message>::const_iterator it = messages.begin(); it != messages.end(); it++)
 		it->send();
 	messages.clear();
 }
 
-int		Client::print(std::string message) const
+int							Client::print(std::string message) const
 {
 	message += "\r\n";
 	std::cout << getNickname() << " sending : " << message;
@@ -95,14 +95,14 @@ int		Client::print(std::string message) const
 	return (1);
 }
 
-int 				Client::getState() const { return this->state; }
-int 				Client::getFd() const { return this->fd; }
-const std::string&	Client::getUsername() const { return (this->username); }
-const std::string&	Client::getRealname() const { return (this->realname); }
-const std::string&	Client::getNickname() const { return (this->nickname); }
-const std::string	Client::getFullname() const { return (this->nickname + "!" + this->username + "@" + this->hostname); }
-
-bool				Client::getMode(const char& mode) const
+int 						Client::getState() const { return this->state; }
+int 						Client::getFd() const { return this->fd; }
+const std::string&			Client::getUsername() const { return (this->username); }
+const std::string&			Client::getRealname() const { return (this->realname); }
+const std::string&			Client::getNickname() const { return (this->nickname); }
+const std::string			Client::getFullname() const { return (this->nickname + "!" + this->username + "@" + this->hostname); }
+const std::string&			Client::getReason() const { return (this->reason); }
+bool						Client::getMode(const char& mode) const
 {
 	std::map<const char, bool>::const_iterator it = this->modes.find(mode);
 
@@ -111,7 +111,7 @@ bool				Client::getMode(const char& mode) const
 	return (it->second);
 }
 
-std::string		Client::getModes() const
+std::string					Client::getModes() const
 {
 	std::string res;
 	
@@ -123,37 +123,40 @@ std::string		Client::getModes() const
 	return (res);
 }
 
-int					Client::getNbChannels() const { return (channels.size()); }
+int							Client::getNbChannels() const { return (channels.size()); }
+std::vector<std::string>	Client::getChannels() const { return (channels); }
+time_t						Client::getLastPing() const {	return (lastPong); }
+time_t						Client::getLastPong() const { return (lastPong); }
 
-time_t				Client::getLastPing() const{
-	return lastPing;
-}
-
-void				Client::setUsername(const std::string& new_username) { this->username = new_username; }
-void				Client::setRealname(const std::string& new_realname) { this->realname = new_realname; }
-void				Client::setNickname(const std::string& new_nickname)
+void						Client::setUsername(const std::string& new_username) { this->username = new_username; }
+void						Client::setRealname(const std::string& new_realname) { this->realname = new_realname; }
+void						Client::setNickname(const std::string& new_nickname)
 {
 	print(":" + this->nickname + " NICK " + new_nickname);
 	this->nickname = new_nickname; 
 }
-
-void				Client::setState(const int new_state) { this->state = new_state; }
-void				Client::setMode(const char& mode, bool value)
+void						Client::setReason(const std::string& new_reason) { this->reason = new_reason; }
+void						Client::setState(const int new_state) { this->state = new_state; }
+void						Client::setMode(const char& mode, bool value)
 {
 	if (this->modes.count(mode) == 0)
 		return ;
 	this->modes[mode] = value;
 }
 
+void						Client::setFailedPass(){ failedPass = true; }
+void						Client::setLastPing(){ lastPing = std::time(0); }
+void						Client::setLastPong(){ lastPong = std::time(0); }
 
-void	Client::setLastPing(){ lastPing= std::time(0); }
 Client::Client(int fd, struct sockaddr_in address):
 			fd(fd),
 			state(NEED_PASS),
 			username("*"),
 			realname("*"),
 			nickname("*"),
-			lastPing(std::time(0))
+			failedPass(false),
+			lastPing(std::time(0)),
+			lastPong(std::time(0))
 {
 
 	fcntl(fd, F_SETFL, O_NONBLOCK);
@@ -172,9 +175,9 @@ Client::Client(int fd, struct sockaddr_in address):
 	modes['s'] = false;
 }
 
-void		Client::addMessage(const Message& message) { messages.push_back(message); }
-void		Client::addChannel(const std::string& channel) { channels.push_back(channel); }
-void		Client::removeChannel(const std::string& channel)
+void						Client::addMessage(const Message& message) { messages.push_back(message); }
+void						Client::addChannel(const std::string& channel) { channels.push_back(channel); }
+void						Client::removeChannel(const std::string& channel)
 {
 	for (std::vector<std::string>::iterator it = channels.begin(); it != channels.end(); it++)
 	{

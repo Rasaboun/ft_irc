@@ -62,7 +62,13 @@ void                Channel::addClient(Client* client, const std::string& key)
     
 }
 
-void                Channel::addOperator(Client* client) { operators.push_back(client); }
+int                Channel::addOperator(Client* client) 
+{
+    if (!client)
+        return (1);
+    operators.push_back(client);
+    return (0);
+}
 void                Channel::addBan(Client* client) { banned.push_back(client); }
 
 void                Channel::setTopic(const std::string& topic){ this->topic = topic; } 
@@ -74,16 +80,20 @@ void                Channel::editTopic(Client* editor, const std::string& topic)
     std::time_t curr_time = std::time(NULL);
     topic_time = convert_time(&curr_time);
     std::cout << "topic time " << topic_time << std::endl;
-    sendToClients(":" + editor->getNickname() +  " TOPIC " + name + " " + topic);
+    sendToClients(":" + editor->getFullname() +  " TOPIC " + name + " " + topic);
 }
 
 
-void                Channel::setMode(char mode, const std::string& param)
+int               Channel::setMode(char mode, const std::string& param)
 {
     if (mode == BAN)
     {
         addBan(serv->getClient(param));
-        return ;
+        return (0);
+    }
+    if (mode == CHANOP)
+    {
+        return (addOperator(serv->getClient(param)));
     }
     modes[mode] = true; 
     if (mode == LIMIT)
@@ -92,19 +102,24 @@ void                Channel::setMode(char mode, const std::string& param)
     {
         this->key = param;
     }
+    return (0);
 }
-void                Channel::unsetMode(char mode, const std::string& param)
+
+int               Channel::unsetMode(char mode, const std::string& param)
 {
     if (mode == BAN)
     {
         removeBan(serv->getClient(param));
-        return ;
-    } 
+        return (0);
+    }
+    if (mode == CHANOP)
+        return (removeOperator(serv->getClient(param)));
     modes[mode] = false;  
     if (mode == LIMIT)
         this->limit = MAX_INT;
     if (mode == KEY)
         this->key = "";
+    return (0);
 }
 void                Channel::changeModes(Client *client, std::vector<std::string> params)
 {
@@ -120,11 +135,12 @@ void                Channel::changeModes(Client *client, std::vector<std::string
             continue ;
         if (modestring[0] == '-')
         {
-            if (modestring[i] == BAN) 
+            if (modestring[i] == BAN || modestring[i] == CHANOP) 
             {
                 if (args != params.end())
                 {
-                    unsetMode(modestring[i], *args);
+                    if (unsetMode(modestring[i], *args))
+                        continue ;
                     new_params += " " + *args;
                     res += modestring[i];
                     args++;
@@ -139,7 +155,8 @@ void                Channel::changeModes(Client *client, std::vector<std::string
             {
                 if (args != params.end())
                 {
-                    setMode(modestring[i], *args);
+                    if (setMode(modestring[i], *args))
+                        continue ;
                     new_params += " " + *args;
                     res += modestring[i];
                     args++;
@@ -188,8 +205,10 @@ void                Channel::removeClient(Client *client, const std::string& mes
     removeInvite(client);
 }
 
-void                Channel::removeOperator(Client *client)
+int               Channel::removeOperator(Client *client)
 {
+    if (!client)
+        return (1);
     for (std::vector<Client *>::iterator it = operators.begin(); it != operators.end(); it++)
     {
         if (*it == client)
@@ -198,6 +217,7 @@ void                Channel::removeOperator(Client *client)
             break ;
         }
     }
+    return (0);
 }
 
 void                Channel::removeInvite(Client *client)
@@ -212,8 +232,10 @@ void                Channel::removeInvite(Client *client)
     }
 }
 
-void                Channel::removeBan(Client *client)
+void              Channel::removeBan(Client *client)
 {
+    if (!client)
+        return ;
     for (std::vector<Client *>::iterator it = banned.begin(); it != banned.end(); it++)
     {
         if (*it == client)
@@ -241,8 +263,8 @@ void                Channel::sendTopic(Client *client) const
     {
         res = reply_prefix(serv->getName(), RPL_TOPIC, client->getFullname()) + name + " " + topic;
         client->print(res);
-        res = reply_prefix(serv->getName(), RPL_TOPICWHOTIME, client->getFullname()) + name + \
-                + " " + topic_editor + " :" + topic_time;
+        res = reply_prefix(serv->getName(), RPL_TOPICWHOTIME, client->getNickname()) + name + \
+                + " " + topic_editor + " " + topic_time;
     }
     else
         res = reply_prefix(serv->getName(), RPL_NOTOPIC, client->getFullname()) + name + " No topic is set";

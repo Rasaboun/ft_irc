@@ -29,7 +29,8 @@ int		Ircserv::setup()
 
 void 	Ircserv::run()
 {
-	if (poll(&client_fds[0], client_fds.size(), 5 * 1000) == -1)
+	if (poll(&client_fds[0], client_fds.size(), 5
+	 * 1000) == -1)
 		return ;
 	std::cout << clients.size() << " USERS CONNECTED\n";
 	if (std::time(0) - lastPing >= MYPING)
@@ -73,7 +74,6 @@ void 	Ircserv::run()
 		{
 			removeClient(client);
 		}
-		
 	}
 
 	std::map<std::string, Channel *>::iterator ite = channels.begin();
@@ -116,6 +116,13 @@ void	Ircserv::removeClient(Client* client)
 			break ;
 		}
 	}
+
+	std::vector<std::string> channels = client->getChannels();
+	for (std::vector<std::string>::iterator it = channels.begin(); it != channels.end(); it++)
+	{
+		getChannel(*it)->removeClient(client, client->getReason());
+	}
+
 	clients.erase(client->getFd());
 	delete client;
 }
@@ -151,16 +158,24 @@ void					Ircserv::sendPing()
 
 	for (std::map<int, Client *>::const_iterator it = clients.begin(); it != clients.end(); it++)
 	{
-		if (now - it->second->getLastPing() >= TIMEOUT)
+		if (now - it->second->getLastPong() >= TIMEOUT)
 		{
 			std::cout << "PING TIMEOUT" << std::endl;
-			//quit(it->second, *this);
 			it->second->setState(DCED);
 		}
 		else{
 			it->second->print("Ping " + getName());
 		}
 	}
+}
+
+void				Ircserv::sendToClients(const std::string& message) const
+{
+	for (std::map<int, Client *>::const_iterator it = clients.begin(); it != clients.end(); it++)
+	{
+		it->second->print(message);
+	}
+
 }
 
 const std::string& 	Ircserv::getPassword() const { return (this->password); }
@@ -187,7 +202,7 @@ Channel*			Ircserv::getChannel(const std::string& name) const
 
 }
 std::map<std::string, Channel *>	Ircserv::getChannels() const { return (this->channels); }
-int				Ircserv::getNbChannels() const { return (channels.size()); }
+int									Ircserv::getNbChannels() const { return (channels.size()); }
 
 
 Ircserv::Ircserv(int port, const std::string& password):

@@ -21,33 +21,39 @@ class Client
 	Client();
 	~Client();
 
-	const Client&		operator=(const Client& rhs);
+	const Client&				operator=(const Client& rhs);
 	
-	void				receive(Ircserv& serv);
-	int					print(std::string message) const;
+	void						receive(Ircserv& serv);
+	int							print(std::string message) const;
 
-	int					getState() const;
-	int					getFd() const;
-	const std::string&	getUsername() const;
-	const std::string&	getRealname() const;
-	const std::string&	getNickname() const;
-	const std::string	getFullname() const;
-	bool				getMode(const char& mode) const;
-	std::string			getModes() const;
-	time_t				getLastPing()const;
-	int					getNbChannels() const;
+	int							getState() const;
+	int							getFd() const;
+	const std::string&			getUsername() const;
+	const std::string&			getRealname() const;
+	const std::string&			getNickname() const;
+	const std::string			getFullname() const;
+	const std::string&			getReason() const;
+	bool						getMode(const char& mode) const;
+	std::string					getModes() const;
+	time_t						getLastPing()const;
+	time_t						getLastPong()const;
+	std::vector<std::string>	getChannels() const;
+	int							getNbChannels() const;
 
-	void				setState(const int new_state);
-	void				setUsername(const std::string& new_username);
-	void				setRealname(const std::string& new_realname);
-	void				setNickname(const std::string& new_nickname);
-	void				setMode(const char& mode, bool value);
-	void				setLastPing();
+	void						setState(const int new_state);
+	void						setUsername(const std::string&);
+	void						setRealname(const std::string&);
+	void						setNickname(const std::string&);
+	void						setReason(const std::string&);
+	void						setMode(const char& mode, bool value);
+	void						setFailedPass();
+	void						setLastPing();
+	void						setLastPong();
 
-	void				addMessage(const Message& message);
-	void				sendMessages();
-	void				addChannel(const std::string&);
-	void				removeChannel(const std::string& channel);
+	void						addMessage(const Message& message);
+	void						sendMessages();
+	void						addChannel(const std::string&);
+	void						removeChannel(const std::string& channel);
 
 	private:
 
@@ -59,14 +65,18 @@ class Client
 	std::string						username;
 	std::string						realname;
 	std::string						nickname;
+	std::string						reason;
 
 	std::vector<Command>			commands;
 	std::map<const char, bool>		modes;
 	std::vector<Message>			messages;
 	std::vector<std::string>		channels;
 
-	time_t								lastPing;
-	void				handle_input(Ircserv& serv);
+	bool							failedPass;
+	time_t							lastPing;
+	time_t							lastPong;
+
+	void							handle_input(Ircserv& serv);
 
 };
 

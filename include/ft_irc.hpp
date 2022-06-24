@@ -37,13 +37,15 @@
 #define     SECRET      's'
 #define     TOPIC       't'
 #define     BAN         'b'
+#define     CHANOP      'o'
 
 //Channel permissions
 #define     OPERATOR    'o'
 
-#define CHANMODES   "kilmnstb"
+#define CHANMODES   "kilmnstbo"
 #define	CHANLIMIT   10
 #define CHANTYPES   "#"
+#define NICKLEN     9
 
 #define MAX_INT     2147483647
 

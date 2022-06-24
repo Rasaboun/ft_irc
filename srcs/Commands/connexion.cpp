@@ -11,8 +11,9 @@ int	pass(Client *client, Ircserv& serv, Command& command)
 	else
 	{
 		reply(ERR_PASSWDMISMATCH, client, serv, command);
+		client->setFailedPass();
 		client->setState(DCED); //Close connection if wrong pass;
-		return (fatal_error(client->getFd(), "Wrong password. Closing connection"));
+		return (0); //(fatal_error(client->getFd(), "Wrong password. Closing connection"));
 	}
 	return (0);
 }
@@ -41,21 +42,13 @@ int	user(Client *client, Ircserv& serv, Command& command)
 		return (reply(ERR_ALREADYREGISTERED, client, serv, command));
 	if (command.getNbParams() < 4)
 		return (reply(ERR_NEEDMOREPARAMS, client, serv, command));
-	
-	//need to handle mode (params[1])
 
 	if (command.getParam(3)[0] != ':')
 		return (client->print("USER :Incorrect realname"));
 	if (command.getParam(3).length() == 1)
 		return (reply(ERR_NEEDMOREPARAMS, client, serv, command));
 	client->setUsername(command.getParam(0));
-	std::string realname = command.getParam(3).substr(1);
-
-	for (int i = 4; i < command.getNbParams(); i++)
-	{
-		realname += " " + command.getParam(i);
-	}
-	client->setRealname(realname);
+	client->setRealname(command.joinParams(3));
 	client->setState(REGISTERED);
 	reply(RPL_WELCOME, client, serv, command);
 	reply(RPL_YOURHOST, client, serv, command);
@@ -73,11 +66,11 @@ int	ping(Client *client, Ircserv& serv, Command& command)
 	return (0);
 }
 
-int	pong(Client *client, Ircserv& serv, Command& command) //Check Qui est le client ?
+int	pong(Client *client, Ircserv& serv, Command& command)
 {
 	if (command.getNbParams() == 0)
 		return (reply(ERR_NEEDMOREPARAMS, client, serv, command));
-	serv.sendPong(client, command.getParam(0));
+	client->setLastPong();
 	return (0);
 }
 
@@ -93,7 +86,7 @@ int	oper(Client *client, Ircserv& serv, Command& command)
 int     quit(Client* client, Ircserv& serv, Command& command)
 {
 	(void)serv;
-	(void)command;
+	client->setReason(command.joinParams(0));
     client->setState(DCED);
 	return (0);
 }

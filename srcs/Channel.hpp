@@ -25,17 +25,17 @@ class Channel
 
     void                            setTopic(const std::string&);
     void                            editTopic(Client*, const std::string&);
-    void                            setMode(char, const std::string& param = std::string());
-    void                            unsetMode(char, const std::string& param = std::string());
+    int                             setMode(char, const std::string& param = std::string());
+    int                             unsetMode(char, const std::string& param = std::string());
     void                            changeModes(Client *, std::vector<std::string>);
     
     void                            addClient(Client *, const std::string& key = std::string());
-    void                            addOperator(Client *);
+    int                             addOperator(Client *);
     void                            addBan(Client *);
     void                            kickClient(Client *, Client *, const std::string&);
     void                            removeClient(Client *, const std::string&);
     void                            removeInvite(Client *);
-    void                            removeOperator(Client *);
+    int                             removeOperator(Client *);
     void                            removeBan(Client *);
 
     void                            sendToClients(const std::string&) const;

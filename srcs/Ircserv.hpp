@@ -31,6 +31,7 @@ class Ircserv
 
 	void								sendPong(Client*, const std::string&) const;
 	void								sendPing();
+	void								sendToClients(const std::string&) const;
 
 	const std::string&					getPassword() const;
 	const std::string&					getName() const;

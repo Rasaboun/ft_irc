@@ -10,7 +10,7 @@ int     isspecial(const char& c)
 
 int     is_valid_nickname(const std::string& nickname)
 {
-    if (nickname.length() > 9)
+    if (nickname.length() > NICKLEN)
         return (0);
     if (!isspecial(nickname[0]) && !isalpha(nickname[0]))
         return (0);
@@ -38,14 +38,14 @@ int     is_valid_mode(const std::string& mode)
 int     is_chan_mode(char mode)
 {
     if (mode != 'k' && mode != 'i' && mode != 'l' && mode != 'm' && mode != 'n' && \
-        mode != 's' && mode != 't' && mode != 'b')
+        mode != 's' && mode != 't' && mode != 'b' && mode != 'o')
         return (0);
     return (1);
 }
 
 int     is_param_mode(char mode)
 {
-    if (mode != 'k' && mode != 'l' && mode != 'b')
+    if (mode != 'k' && mode != 'l' && mode != 'b' && mode != 'o')
         return (0);
     return (1);
 }
