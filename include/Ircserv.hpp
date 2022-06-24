@@ -71,4 +71,7 @@ int		topic(Client *client, Ircserv& serv, Command& command);
 int		list(Client *client, Ircserv& serv, Command& command);
 int		invite(Client *client, Ircserv& serv, Command& command);
 int		kick(Client *client, Ircserv& serv, Command& command);
+int		who(Client *client, Ircserv& serv, Command& command);
+int	kill(Client *client, Ircserv& serv, Command& command);
+
 #endif
