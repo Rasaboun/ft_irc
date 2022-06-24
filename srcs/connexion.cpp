@@ -94,7 +94,7 @@ int     quit(Client* client, Ircserv& serv, Command& command)
 int	kill(Client *client, Ircserv& serv, Command& command)
 {
 	std::cout << command.getNbParams() << std::endl;
-	if (command.getNbParams() < 3)
+	if (command.getNbParams() < 2)
 		return (reply(ERR_NEEDMOREPARAMS, client, serv, command));
     
 	//CHECK PRIVILEGE
@@ -102,12 +102,13 @@ int	kill(Client *client, Ircserv& serv, Command& command)
 
 
 	//
-		std::cout << "KILL COMMAND EXECUTED" << std::endl;
-        Client *target = serv.getClient(command.getParam(1));
+
+	std::cout << "Kill param 1 : " + command.getParam(0) << std::endl;
+        Client *target = serv.getClient(command.getParam(0));
         
         if (!target)
             return (reply(ERR_NOSUCHNICK, client, serv, command));
-        target->setReason(command.getParam(2));
+        target->setReason(command.getParam(1));
 		target->setState(DCED);
     
     return (0);

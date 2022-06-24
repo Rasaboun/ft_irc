@@ -92,7 +92,6 @@ void	Ircserv::execCommand(Client* client, Command& command)
 {
 
 	std::map<std::string, Ircserv::cmd_type >::iterator it = commands.find(command.getName());
-
 	if (it == commands.end())
 		return ;
 	(*it->second)(client, *this, command);
@@ -226,7 +225,7 @@ Ircserv::Ircserv(int port, const std::string& password):
 	commands["INVITE"] = invite;
 	commands["KICK"] = kick;
 	commands["WHO"] = who;
-	commands["KILL"] = kill;
+	commands["kill"] = kill;
 }
 
 Ircserv::~Ircserv()
