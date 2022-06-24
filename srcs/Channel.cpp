@@ -345,6 +345,16 @@ void                Channel::invite(Client *client, const std::string& name)
 
 }
 
+void                Channel::printWho(Client* target) const
+{
+    std::string base = reply_prefix(serv->getName(), RPL_WHOREPLY, target->getNickname()) + name +  " ";
+
+    for (std::vector<Client *>::const_iterator it = clients.begin(); it != clients.end(); it++)
+    {
+        target->print(base + (*it)->getUsername() + " " + (*it)->getHostname() + " " + serv->getName()\
+                     + " " + (*it)->getNickname() + " H " + (*it)->getRealname());
+    }
+}
 
 Channel::Channel(Ircserv*   serv, const std::string& name):
                 name(name),

@@ -12,11 +12,11 @@ std::string     error_replies(int code, Client* client, Ircserv& serv, Command& 
     switch (code)
     {
         case ERR_NOSUCHNICK:
-            return(command.getParam(0) + " :No such nick/channel");  
+            return(param + " :No such nick/channel");  
         case ERR_NOSUCHCHANNEL:
             return(param + " :No such channel");
         case ERR_CANNOTSENDTOCHAN:
-            return(command.getParam(0) + " :Cannot send to channel");
+            return(param + " :Cannot send to channel");
         case ERR_TOOMANYCHANNELS:
             return (param + " :You have joined too many channels");  
         case ERR_TOOMANYTARGETS:

@@ -144,7 +144,7 @@ int	invite(Client *client, Ircserv& serv, Command& command)
     if (!channel)
 		return (reply(ERR_NOSUCHCHANNEL, client, serv, command, command.getParam(1)));
     if (serv.availableNickname(command.getParam(0)))
-		return (reply(ERR_NOSUCHNICK, client, serv, command));
+		return (reply(ERR_NOSUCHNICK, client, serv, command, command.getParam(0)));
 
     if (!channel->isClient(client))
         return (reply(ERR_NOTONCHANNEL, client, serv, command, command.getParam(1)));

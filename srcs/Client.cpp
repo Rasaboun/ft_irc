@@ -100,6 +100,7 @@ int 						Client::getFd() const { return this->fd; }
 const std::string&			Client::getUsername() const { return (this->username); }
 const std::string&			Client::getRealname() const { return (this->realname); }
 const std::string&			Client::getNickname() const { return (this->nickname); }
+const std::string&			Client::getHostname() const { return (this->hostname); }
 const std::string			Client::getFullname() const { return (this->nickname + "!" + this->username + "@" + this->hostname); }
 const std::string&			Client::getReason() const { return (this->reason); }
 bool						Client::getMode(const char& mode) const

@@ -48,6 +48,7 @@ class Channel
     bool                            isBanned(Client *) const;
 
     void                            invite(Client*, const std::string&);
+    void                            printWho(Client *) const;
     
     private:
 

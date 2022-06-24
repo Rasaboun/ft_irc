@@ -73,6 +73,7 @@ std::vector<std::string>	split(std::string param, char c);
 #define		RPL_CREATED					003
 #define		RPL_MYINFO					004
 #define     RPL_UMODEIS                 221
+#define     RPL_ENDOFWHO                315
 #define     RPL_LISTSTART               321
 #define     RPL_LIST                    322
 #define     RPL_LISTEND                 323
@@ -81,6 +82,7 @@ std::vector<std::string>	split(std::string param, char c);
 #define     RPL_TOPIC                   332
 #define     RPL_TOPICWHOTIME            333
 #define     RPL_INVITING                341
+#define     RPL_WHOREPLY                352
 #define     RPL_NAMREPLY                353
 #define     RPL_ENDOFNAMES              366
 

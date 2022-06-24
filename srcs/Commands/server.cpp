@@ -32,3 +32,36 @@ int	mode(Client *client, Ircserv& serv, Command& command)
 		client->setMode(command.getParam(1)[1], true);
 	return (0);
 }
+
+int	who(Client *client, Ircserv& serv, Command& command)
+{
+	if (command.getNbParams() < 1)
+		return (reply(ERR_NEEDMOREPARAMS, client, serv, command));
+
+	std::string		target = command.getParam(0);
+	if (target[0] == '#')
+	{
+		Channel *channel = serv.getChannel(target);
+		
+		if (!channel)
+			return (reply(ERR_NOSUCHCHANNEL, client, serv, command, target));
+		if (channel->isClient(client))
+			channel->printWho(client);
+	}
+	else
+	{
+		Client *cli = serv.getClient(target);
+
+		if (cli)
+		{
+			std::string base = reply_prefix(serv.getName(), RPL_WHOREPLY, client->getNickname());
+
+        	client->print(base + "* ~" + cli->getUsername() + " " + cli->getHostname() \
+					+ " " + serv.getName() + " " + cli->getNickname() + " H 0 " + cli->getRealname());
+
+		}
+	}
+    client->print(reply_prefix(serv.getName(), RPL_ENDOFWHO, client->getNickname()) + target + " :End of WHO list");
+
+	return (0);
+}
