@@ -7,7 +7,6 @@
 
 # define	TIMEOUT 300
 # define	MYPING 30
-# define	CHANLIMIT 10
 
 class Ircserv
 {	

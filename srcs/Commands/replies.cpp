@@ -15,6 +15,8 @@ std::string     error_replies(int code, Client* client, Ircserv& serv, Command& 
             return(command.getParam(0) + " :No such nick/channel");  
         case ERR_NOSUCHCHANNEL:
             return(param + " :No such channel");
+        case ERR_CANNOTSENDTOCHAN:
+            return(command.getParam(0) + " :Cannot send to channel");
         case ERR_TOOMANYCHANNELS:
             return (param + " :You have joined too many channels");  
         case ERR_TOOMANYTARGETS:
@@ -40,7 +42,11 @@ std::string     error_replies(int code, Client* client, Ircserv& serv, Command& 
         case ERR_ALREADYREGISTERED:
             return(":Unautorized command (already registered)");             
         case ERR_PASSWDMISMATCH:
-            return(":Password incorrect");        
+            return(":Password incorrect");             
+        case ERR_CHANNELISFULL:
+            return(param + " :Cannot join channel (+l)");
+        case ERR_BANNEDFROMCHAN:
+            return(param + " :Cannot join channel (+b)");                    
         case ERR_CHANOPRIVISNEEDED:
             return(command.getParam(0) + " :You're not channel operator");                 
         case ERR_UMODEUNKNOWNFLAG:
@@ -73,7 +79,7 @@ std::string   command_responses(int code, Client* client, Ircserv& serv, Command
         case RPL_LISTEND:
             return("End of /LIST");      
         case RPL_CHANNELMODEIS:         
-            return(command.getParam(0) + " +" + serv.getChannel(command.getParam(0))->getModes()); // add mode arguments ??
+            return(command.getParam(0) + " +" + serv.getChannel(command.getParam(0))->getModes());
         case RPL_NOTOPIC:
             return (command.getParam(0) + " :No topic is set");
         case RPL_TOPIC:

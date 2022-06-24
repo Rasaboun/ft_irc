@@ -36,14 +36,16 @@
 #define     NO_EXTERN   'n'
 #define     SECRET      's'
 #define     TOPIC       't'
+#define     BAN         'b'
 
 //Channel permissions
-#define     FOUNDER     'p'
-#define     PROTECTED   'a'
 #define     OPERATOR    'o'
-#define     HALFOP      'h'
-#define     VOICE       'v'
 
+#define CHANMODES   "kilmnstb"
+#define	CHANLIMIT   10
+#define CHANTYPES   "#"
+
+#define MAX_INT     2147483647
 
 class Client    ;
 class Command   ;
@@ -61,6 +63,7 @@ int         	            is_valid_nickname(const std::string& nickname);
 int         	            is_valid_mode(const std::string& mode);
 int                         is_valid_channel(const std::string& chan);
 int                         is_chan_mode(char mode);
+int                         is_param_mode(char mode);
 std::vector<std::string>	split(std::string param, char c);
 
 #define		RPL_WELCOME					001
@@ -81,6 +84,7 @@ std::vector<std::string>	split(std::string param, char c);
 
 #define     ERR_NOSUCHNICK              401
 #define     ERR_NOSUCHCHANNEL           403
+#define     ERR_CANNOTSENDTOCHAN        404
 #define     ERR_TOOMANYCHANNELS         405
 #define     ERR_TOOMANYTARGETS          407
 #define     ERR_NORECIPIENT             411
@@ -94,7 +98,9 @@ std::vector<std::string>	split(std::string param, char c);
 #define     ERR_NEEDMOREPARAMS          461
 #define     ERR_ALREADYREGISTERED       462
 #define     ERR_PASSWDMISMATCH          464
+#define     ERR_CHANNELISFULL           471
 #define     ERR_INVITEONLYCHAN          473
+#define     ERR_BANNEDFROMCHAN          474
 #define     ERR_BADCHANNELKEY           475
 #define     ERR_CHANOPRIVISNEEDED       482
 #define     ERR_UMODEUNKNOWNFLAG        501

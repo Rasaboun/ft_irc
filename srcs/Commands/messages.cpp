@@ -11,7 +11,15 @@ int	msg(Client *client, Ircserv& serv, Command& command)
     if (serv.isChannel(command.getParam(0)))
     {
         //Private message to a channel
-        Message mess(client->getFullname(), serv.getChannel(command.getParam(0)), command.joinParams(1));
+        Channel *channel = serv.getChannel(command.getParam(0));
+        if (channel->getMode(NO_EXTERN) && !channel->isClient(client))      //Mode n is on
+		  return (reply(ERR_CANNOTSENDTOCHAN, client, serv, command));
+        if (channel->getMode(MODERATE) && !channel->isOperator(client))     //Mode m is on
+		  return (reply(ERR_CANNOTSENDTOCHAN, client, serv, command));
+        if (channel->isBanned(client))
+		  return (reply(ERR_CANNOTSENDTOCHAN, client, serv, command));
+
+        Message mess(client->getFullname(), channel, command.joinParams(1));
         client->addMessage(mess);
     }
     else

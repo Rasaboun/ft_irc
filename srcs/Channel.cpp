@@ -16,17 +16,26 @@ bool                Channel::getMode(char mode) const
 const std::string		Channel::getModes() const
 {
 	std::string res;
-	
+	std::string params;
+
 	for(std::map<const char, bool>::const_iterator it = modes.begin(); it != modes.end(); it++)
 	{
 		if (it->second)
-			res += it->first;
-	}
-	return (res);
+        {
+            res += it->first;
+            if (it->first == LIMIT)
+                params += " " + ft_itoa(limit);
+            if (it->first == KEY)
+                params += " " + key;
+            
+        }
+    }    
+	return (res + params);
 }
 
 const std::vector<Client *>&    Channel::getClients() const { return (this->clients); }
 int                 Channel::getNbClients() const { return (this->clients.size()); }
+int                 Channel::getLimit() const { return (this->limit); }
 
 void                Channel::addClient(Client* client, const std::string& key)
 {
@@ -54,6 +63,7 @@ void                Channel::addClient(Client* client, const std::string& key)
 }
 
 void                Channel::addOperator(Client* client) { operators.push_back(client); }
+void                Channel::addBan(Client* client) { banned.push_back(client); }
 
 void                Channel::setTopic(const std::string& topic){ this->topic = topic; } 
 
@@ -68,23 +78,80 @@ void                Channel::editTopic(Client* editor, const std::string& topic)
 }
 
 
-void                Channel::setMode(char mode){ modes[mode] = true; }
-void                Channel::unsetMode(char mode){ modes[mode] = false; }
-void                Channel::changeModes(Client *client, const std::string& modestring)
+void                Channel::setMode(char mode, const std::string& param)
 {
+    if (mode == BAN)
+    {
+        addBan(serv->getClient(param));
+        return ;
+    }
+    modes[mode] = true; 
+    if (mode == LIMIT)
+        this->limit = atoi(param.c_str());
+    if (mode == KEY)
+    {
+        this->key = param;
+    }
+}
+void                Channel::unsetMode(char mode, const std::string& param)
+{
+    if (mode == BAN)
+    {
+        removeBan(serv->getClient(param));
+        return ;
+    } 
+    modes[mode] = false;  
+    if (mode == LIMIT)
+        this->limit = MAX_INT;
+    if (mode == KEY)
+        this->key = "";
+}
+void                Channel::changeModes(Client *client, std::vector<std::string> params)
+{
+    std::string modestring = params[1];
     std::string res = modestring[0] == '-' ? "-" : "+";
+    std::string new_params;
+
+    params.erase(params.begin(), params.begin() + 2);
+    std::vector<std::string>::iterator  args = params.begin();
     for (size_t i = 0; i < modestring.length(); i++)
     {
         if (!is_chan_mode(modestring[i]))
             continue ;
         if (modestring[0] == '-')
+        {
+            if (modestring[i] == BAN) 
+            {
+                if (args != params.end())
+                {
+                    unsetMode(modestring[i], *args);
+                    new_params += " " + *args;
+                    res += modestring[i];
+                    args++;
+                }
+                continue ;
+            }
             unsetMode(modestring[i]);
+        }
         else
+        {
+            if (is_param_mode(modestring[i])) 
+            {
+                if (args != params.end())
+                {
+                    setMode(modestring[i], *args);
+                    new_params += " " + *args;
+                    res += modestring[i];
+                    args++;
+                }
+                continue ;
+            }
             setMode(modestring[i]);
+        }
         res += modestring[i];
     }
     if (res.length() > 1)
-        sendToClients(":" + client->getFullname() + " MODE " + name + " " + res);
+        sendToClients(":" + client->getFullname() + " MODE " + name + " " + res + new_params);
 
 }
 
@@ -140,6 +207,18 @@ void                Channel::removeInvite(Client *client)
         if (*it == client)
         {
             invites.erase(it);
+            break ;
+        }
+    }
+}
+
+void                Channel::removeBan(Client *client)
+{
+    for (std::vector<Client *>::iterator it = banned.begin(); it != banned.end(); it++)
+    {
+        if (*it == client)
+        {
+            banned.erase(it);
             break ;
         }
     }
@@ -223,6 +302,16 @@ bool                Channel::isInvited(Client *client) const
     return (false);
 }
 
+bool                Channel::isBanned(Client *client) const
+{
+    for (std::vector<Client *>::const_iterator it = banned.begin(); it != banned.end(); it++)
+    {
+        if (*it == client)
+            return (true);
+    }
+    return (false);
+}
+
 void                Channel::invite(Client *client, const std::string& name)
 {
     Client* target = serv->getClient(name);
@@ -237,6 +326,7 @@ void                Channel::invite(Client *client, const std::string& name)
 
 Channel::Channel(Ircserv*   serv, const std::string& name):
                 name(name),
+                limit(MAX_INT),
                 serv(serv)
 {
     modes['i'] = false;

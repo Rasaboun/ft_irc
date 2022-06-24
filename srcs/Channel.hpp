@@ -21,19 +21,22 @@ class Channel
     const std::string               getModes() const;
     const std::vector<Client *>&    getClients() const;
     int                             getNbClients() const;
+    int                             getLimit() const;
 
     void                            setTopic(const std::string&);
     void                            editTopic(Client*, const std::string&);
-    void                            setMode(char);
-    void                            unsetMode(char);
-    void                            changeModes(Client *,const std::string&);
+    void                            setMode(char, const std::string& param = std::string());
+    void                            unsetMode(char, const std::string& param = std::string());
+    void                            changeModes(Client *, std::vector<std::string>);
     
     void                            addClient(Client *, const std::string& key = std::string());
     void                            addOperator(Client *);
+    void                            addBan(Client *);
     void                            kickClient(Client *, Client *, const std::string&);
     void                            removeClient(Client *, const std::string&);
     void                            removeInvite(Client *);
     void                            removeOperator(Client *);
+    void                            removeBan(Client *);
 
     void                            sendToClients(const std::string&) const;
     void                            sendTopic(Client *) const;
@@ -42,6 +45,7 @@ class Channel
     int                             isClient(Client *) const;
     bool                            isOperator(Client *) const;
     bool                            isInvited(Client *) const;
+    bool                            isBanned(Client *) const;
 
     void                            invite(Client*, const std::string&);
     
@@ -52,10 +56,12 @@ class Channel
     std::string                     key;
     std::string                     topic_editor;
     std::string                     topic_time;
+    int                             limit;
 
     std::vector<Client *>           clients;
     std::vector<Client *>           operators;
     std::vector<Client *>           invites;
+    std::vector<Client *>           banned;
     Ircserv*                        serv;
 	std::map<const char, bool>		modes;
     

@@ -10,7 +10,7 @@ int	channel_mode(Client *client, Ircserv& serv, Command& command)
 		return (reply(RPL_CHANNELMODEIS, client, serv, command));
     if (!chan->isOperator(client))
         return (reply(ERR_CHANOPRIVISNEEDED, client, serv, command));
-    chan->changeModes(client, command.getParam(1));
+    chan->changeModes(client, command.getParams());
     return (0);
 }
 

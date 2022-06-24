@@ -21,15 +21,26 @@ int	join(Client *client, Ircserv& serv, Command& command)
             serv.addChannel(*it);
             new_chan = 1;
         }
+        Channel *channel = serv.getChannel(*it);
         if (new_chan)
-            serv.getChannel(*it)->addOperator(client);
+            channel->addOperator(client);
+        if (channel->getMode(LIMIT) && channel->getNbClients() >= channel->getLimit())
+        {
+            reply(ERR_CHANNELISFULL, client, serv, command, *it);
+            continue ;
+        }
+        if (channel->isBanned(client))
+        {
+            reply(ERR_BANNEDFROMCHAN, client, serv, command, *it);
+            continue ;
+        }
         if (key_it == keys.end())
         {
-            serv.getChannel(*it)->addClient(client);
+            channel->addClient(client);
         }
         else
         {
-            serv.getChannel(*it)->addClient(client, *key_it);
+            channel->addClient(client, *key_it);
             key_it++;
         }
     }

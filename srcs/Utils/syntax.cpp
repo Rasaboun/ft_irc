@@ -38,7 +38,14 @@ int     is_valid_mode(const std::string& mode)
 int     is_chan_mode(char mode)
 {
     if (mode != 'k' && mode != 'i' && mode != 'l' && mode != 'm' && mode != 'n' && \
-        mode != 's' && mode != 't')
+        mode != 's' && mode != 't' && mode != 'b')
+        return (0);
+    return (1);
+}
+
+int     is_param_mode(char mode)
+{
+    if (mode != 'k' && mode != 'l' && mode != 'b')
         return (0);
     return (1);
 }
