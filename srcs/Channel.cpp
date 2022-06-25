@@ -121,6 +121,8 @@ int               Channel::unsetMode(char mode, const std::string& param)
         this->key = "";
     return (0);
 }
+
+
 void                Channel::changeModes(Client *client, std::vector<std::string> params)
 {
     std::string modestring = params[1];

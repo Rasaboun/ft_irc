@@ -99,7 +99,7 @@ int	oper(Client *client, Ircserv& serv, Command& command)
 	return (0);
 }
 
-int     quit(Client* client, Ircserv& serv, Command& command)
+int	quit(Client* client, Ircserv& serv, Command& command)
 {
 	(void)serv;
 	client->setReason(command.joinParams(0));
@@ -113,19 +113,15 @@ int	kill(Client *client, Ircserv& serv, Command& command)
 	if (command.getNbParams() < 2)
 		return (reply(ERR_NEEDMOREPARAMS, client, serv, command));
     
-	//CHECK PRIVILEGE
-    
+	if (!client->isOperator())
+		return (reply(ERR_NOPRIVILEGES, client, serv, command));
 
-
-	//
-
-	std::cout << "Kill param 1 : " + command.getParam(0) << std::endl;
-        Client *target = serv.getClient(command.getParam(0));
-        
-        if (!target)
-            return (reply(ERR_NOSUCHNICK, client, serv, command));
-        target->setReason(command.getParam(1));
-		target->setState(DCED);
+	Client *target = serv.getClient(command.getParam(0));
+	
+	if (!target)
+		return (reply(ERR_NOSUCHNICK, client, serv, command));
+	target->setReason(command.getParam(1));
+	target->setState(DCED);
     
     return (0);
 }

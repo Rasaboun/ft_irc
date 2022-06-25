@@ -87,11 +87,11 @@ int	who(Client *client, Ircserv& serv, Command& command)
 			if (!cli->getMode(INVISIBLE) || (cli->getMode(INVISIBLE) && sharing_channel(client, cli)))
 			{
 				std::string base = reply_prefix(serv.getName(), RPL_WHOREPLY, client->getNickname()) + "* ";
-				/*if (serv.isOperator(cli))
+				if (cli->isOperator())
 					base += "@";
 				else
 					base += "~";
-				*/
+				
 				client->print(base + "~" + cli->getUsername() + " " + cli->getHostname() \
 						+ " " + serv.getName() + " " + cli->getNickname() + " H :0 " + cli->getRealname().substr(1));
 			}

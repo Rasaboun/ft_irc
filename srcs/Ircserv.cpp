@@ -129,7 +129,8 @@ void	Ircserv::removeClient(Client* client)
 	{
 		getChannel(*it)->removeClient(client, client->getReason());
 	}
-
+	if (client->getMode(WALLOP))
+		removeClientFromWallops(client);
 	clients.erase(client->getFd());
 	delete client;
 }

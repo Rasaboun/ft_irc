@@ -62,7 +62,6 @@ void 						Client::receive(Ircserv& serv)
 		ssize_t size;
 		if ((size = recv(this->fd, &buffer, BUFFER_SIZE, 0)) < 0)
 			return ;
-		std::cout << "Received : " << buffer << std::endl;
 		if (size == 0)
 		{
 			this->state = DCED;
@@ -94,7 +93,6 @@ void						Client::sendMessages()
 int							Client::print(std::string message) const
 {
 	message += "\r\n";
-	std::cout << getNickname() << " sending : " << message;
 	write(this->fd, message.c_str(), message.length());
 	return (1);
 }
@@ -227,5 +225,4 @@ const Client& Client::operator=(const Client& rhs)
 Client::~Client()
 {
 	close(this->fd);
-	std::cout << "Client destructor called\n";
 }
