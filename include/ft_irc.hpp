@@ -75,7 +75,9 @@ std::vector<std::string>	split(std::string param, char c);
 #define		RPL_CREATED					003
 #define		RPL_MYINFO					004
 #define     RPL_UMODEIS                 221
+#define     RPL_WHOISUSER               311
 #define     RPL_ENDOFWHO                315
+#define     RPL_ENDOFWHOIS              318
 #define     RPL_LISTSTART               321
 #define     RPL_LIST                    322
 #define     RPL_LISTEND                 323
@@ -87,6 +89,7 @@ std::vector<std::string>	split(std::string param, char c);
 #define     RPL_WHOREPLY                352
 #define     RPL_NAMREPLY                353
 #define     RPL_ENDOFNAMES              366
+#define     RPL_YOUREOPER               381
 
 #define     ERR_NOSUCHNICK              401
 #define     ERR_NOSUCHCHANNEL           403

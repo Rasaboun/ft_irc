@@ -49,6 +49,8 @@ class Client
 	void						setMode(const char& mode, bool value);
 	void						setLastPing();
 	void						setLastPong();
+	
+	void						whoisReplies(const std::string&, Client *) const;
 
 	void						addMessage(const Message& message);
 	void						sendMessages();

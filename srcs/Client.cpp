@@ -44,7 +44,7 @@ void					Client::handle_input(Ircserv& serv)
 	}
 	if (this->state == NEED_PASS && previous_state == NEED_PASS)
 	{
-		fatal_error(this->fd, "Password required");
+		fatal_error(this->fd, "Password required");					// If no pass ->  disconnect
 		this->state = DCED;
 	}
 	if (this->state != previous_state && this->state != DCED) 		// If successfully registered check other cmds
@@ -71,7 +71,7 @@ void 						Client::receive(Ircserv& serv)
 		buffer[size] = 0;
 		this->data += buffer;
 	}
-	
+
 	size_t		position;
 	while ((position = this->data.find(crlf)) != std::string::npos)
 	{
@@ -173,6 +173,13 @@ Client::Client(int fd, struct sockaddr_in address):
 	modes['i'] = false;
 	modes['w'] = false;
 	modes['o'] = false;
+}
+
+void						Client::whoisReplies(const std::string& source, Client *target) const
+{
+	target->print(reply_prefix(source, RPL_WHOISUSER, target->getNickname()) + nickname + " " + username \
+	+ " " + hostname + " * " + realname);
+
 }
 
 void						Client::addMessage(const Message& message) { messages.push_back(message); }
