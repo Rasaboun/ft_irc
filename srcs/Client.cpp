@@ -42,11 +42,13 @@ void					Client::handle_input(Ircserv& serv)
 		this->commands.erase(it);
 		
 	}
-	if (previous_state == NEED_PASS && this->state == NEED_PASS)	// If wrong pass or no pass -> close connection
+	if (previous_state == NEED_PASS && this->state == NEED_PASS && !this->failedPass)	// If wrong pass or no pass -> close connection
 	{
-		this->print(reply_prefix(serv.getName(), ERR_PASSWDMISMATCH, nickname) + ":Password incorrect");
+		fatal_error(this->fd, "Connection password is required");
 		this->state = DCED;
 	}
+	if (this->failedPass)
+		this->state = DCED;
 	if (this->state != previous_state && this->state != DCED) 		// If successfully registered check other cmds
 		handle_input(serv);
 	sendMessages();
