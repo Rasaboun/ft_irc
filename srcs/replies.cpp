@@ -52,7 +52,7 @@ std::string     error_replies(int code, Client* client, Ircserv& serv, Command& 
         case ERR_CHANOPRIVISNEEDED:
             return(command.getParam(0) + " :You're not channel operator");
         case ERR_NOPRIVILEGES:
-            return(" :Permission denied- You're not an IRC operator");                    
+            return(":Permission denied- You're not an IRC operator");                    
         case ERR_UMODEUNKNOWNFLAG:
             return(":Unknown MODE flag");             
         case ERR_USERSDONTMATCH:

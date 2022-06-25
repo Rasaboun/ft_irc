@@ -8,6 +8,14 @@ int	channel_mode(Client *client, Ircserv& serv, Command& command)
 		return (reply(ERR_NOSUCHCHANNEL, client, serv, command));
     if (command.getNbParams() == 1)
 		return (reply(RPL_CHANNELMODEIS, client, serv, command));
+	if (command.getParam(1)[0] != '-' && command.getParam(1).find("b") != std::string::npos && command.getNbParams() == 2)
+	{
+		chan->printBanList(client);
+		if ((command.getParam(1)[0] == '+' && command.getParam(1).length() > 2) \
+			|| (command.getParam(1)[0] != '+' && command.getParam(1).length() > 1))
+       		return (reply(ERR_CHANOPRIVISNEEDED, client, serv, command));
+		return (0);
+	}
     if (!chan->isOperator(client))
         return (reply(ERR_CHANOPRIVISNEEDED, client, serv, command));
     chan->changeModes(client, command.getParams());
@@ -80,15 +88,17 @@ int	who(Client *client, Ircserv& serv, Command& command)
 
 		if (cli)
 		{
-			std::string base = reply_prefix(serv.getName(), RPL_WHOREPLY, client->getNickname()) + "* ";
-			/*if (serv.isOperator(cli))
-				base += "@";
-			else
-				base += "~";
-			*/
-        	client->print(base + "~" + cli->getUsername() + " " + cli->getHostname() \
-					+ " " + serv.getName() + " " + cli->getNickname() + " H :0 " + cli->getRealname().substr(1));
-
+			if (!cli->getMode(INVISIBLE) || (cli->getMode(INVISIBLE) && sharing_channel(client, cli)))
+			{
+				std::string base = reply_prefix(serv.getName(), RPL_WHOREPLY, client->getNickname()) + "* ";
+				/*if (serv.isOperator(cli))
+					base += "@";
+				else
+					base += "~";
+				*/
+				client->print(base + "~" + cli->getUsername() + " " + cli->getHostname() \
+						+ " " + serv.getName() + " " + cli->getNickname() + " H :0 " + cli->getRealname().substr(1));
+			}
 		}
 	}
     client->print(reply_prefix(serv.getName(), RPL_ENDOFWHO, client->getNickname()) + target + " :End of WHO list");
@@ -104,7 +114,8 @@ int	whois(Client *client, Ircserv& serv, Command& command)
 	Client *cli	= serv.getClient(command.getParam(0));
 	if (!cli)
         return (reply(ERR_NOSUCHNICK, client, serv, command, command.getParam(0)));
-	cli->whoisReplies(serv.getPrefix(), client);
+	if (!cli->getMode(INVISIBLE) || (cli->getMode(INVISIBLE) && sharing_channel(client, cli)))
+		cli->whoisReplies(serv.getPrefix(), client);
 	return (reply(RPL_ENDOFWHOIS, client, serv, command, command.getParam(0)));
 
 }

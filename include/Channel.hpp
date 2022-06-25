@@ -31,17 +31,18 @@ class Channel
     
     void                            addClient(Client *, const std::string& key = std::string());
     int                             addOperator(Client *);
-    void                            addBan(Client *);
+    int                             addBan(Client *);
     void                            kickClient(Client *, Client *, const std::string&);
     void                            removeClient(Client *, const std::string&);
     void                            removeInvite(Client *);
     int                             removeOperator(Client *);
-    void                            removeBan(Client *);
+    int                             removeBan(Client *);
 
     void                            sendToClients(const std::string&) const;
     void                            sendTopic(Client *) const;
     void                            printClients(Client *) const;
     void                            printInfos(Client *) const;
+    void                            printBanList(Client *) const;
     int                             isClient(Client *) const;
     bool                            isOperator(Client *) const;
     bool                            isInvited(Client *) const;
