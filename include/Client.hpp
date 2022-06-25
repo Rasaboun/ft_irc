@@ -46,7 +46,7 @@ class Client
 	void						setRealname(const std::string&);
 	void						setNickname(const std::string&);
 	void						setReason(const std::string&);
-	void						setMode(const char& mode, bool value, Ircserv& serv);
+	int							setMode(const char& mode, bool value, Ircserv& serv);
 	void						setLastPing();
 	void						setLastPong();
 	

@@ -142,10 +142,10 @@ void						Client::setNickname(const std::string& new_nickname)
 }
 void						Client::setReason(const std::string& new_reason) { this->reason = new_reason; }
 void						Client::setState(const int new_state) { this->state = new_state; }
-void						Client::setMode(const char& mode, bool value, Ircserv& serv)
+int							Client::setMode(const char& mode, bool value, Ircserv& serv)
 {
 	if (this->modes.count(mode) == 0)
-		return ;
+		return (0);
 	this->modes[mode] = value;
 	if (mode == 'w')
 	{
@@ -154,6 +154,7 @@ void						Client::setMode(const char& mode, bool value, Ircserv& serv)
 		else
 			serv.removeClientFromWallops(this);
 	}
+	return (1);
 }
 void						Client::setLastPing(){ lastPing = std::time(0); }
 void						Client::setLastPong(){ lastPong = std::time(0); }

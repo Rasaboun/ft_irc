@@ -24,32 +24,36 @@ int	mode(Client *client, Ircserv& serv, Command& command)
 		return (reply(RPL_UMODEIS, client, serv, command));
 	if (client->getNickname() != command.getParam(0))
 		return (reply(ERR_USERSDONTMATCH, client, serv, command));
-	if (is_add_or_remove_mode(command.getParam(1)) == '-')
+	std::string mode = command.getParam(1);
+	std::string modifiedModes;
+	if (is_add_or_remove_mode(mode) == '-')
 	{
-		for (size_t i = 1; i < command.getParam(1).length(); i++)
+		for (size_t i = 1; i < mode.length(); i++)
 		{
-			std::cout << "le modes est |" << command.getParam(1)[i] << "|" << std::endl;
-			client->setMode(command.getParam(1)[i], false, serv);
+			std::string mode 
+			std::cout << "le modes est |" << mode[i] << "|" << std::endl;
+			if ((client->setMode(mode[i], false, serv)) && modifiedModes.find(mode[i]) != std::string::npos)
+				modifiedModes += mode[i]; 
 		}
-		//afficher erreur si il y a
-		if (!is_valid_mode(command.getParam(1)))
+		if (!is_valid_mode(mode))
 			reply(ERR_UMODEUNKNOWNFLAG, client, serv, command);
-		//afficher les modes "Mode change [-i] for user dkor"
-		client->print("MODE " + client->getNickname() + " -" + client->getModes());
+		if (modifiedModes.length() > 0)
+			client->print("MODE " + client->getNickname() + " -" + modifiedModes);
 	}
-	if (is_add_or_remove_mode(command.getParam(1)) == '+')
+	if (is_add_or_remove_mode(mode) == '+')
 	{
-		for (size_t i = 1; i < command.getParam(1).length(); i++)
+		std::string	actual_modes(client->getModes());
+		for (size_t i = 1; i < mode.length(); i++)
 		{
-			std::cout << "le modes est |" << command.getParam(1)[i] << "|" << std::endl;
-			if (command.getParam(1)[i] != OPERATOR)
-				client->setMode(command.getParam(1)[i], true, serv);
+			std::cout << "le modes est |" << mode[i] << "|" << std::endl;
+			if (mode[i] != OPERATOR)
+				if ((client->setMode(mode[i], true, serv)) && modifiedModes.find(mode[i]) != std::string::npos)
+					modifiedModes += mode[i];
 		}
-		//afficher erreur si il y a
-		if (!is_valid_mode(command.getParam(1)))
+		if (!is_valid_mode(mode))
 			reply(ERR_UMODEUNKNOWNFLAG, client, serv, command);
-		//afficher les modes "Mode change [+i] for user dkor"
-		client->print("MODE " + client->getNickname() + " +" + client->getModes());
+		if (modifiedModes.length() > 0)
+			client->print("MODE " + client->getNickname() + " +" + modifiedModes);
 	}
 
 	return (0);
