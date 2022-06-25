@@ -78,5 +78,5 @@ int		kick(Client *client, Ircserv& serv, Command& command);
 int		who(Client *client, Ircserv& serv, Command& command);
 int		kill(Client *client, Ircserv& serv, Command& command);
 int		wallops(Client *client, Ircserv& serv, Command& command);
-
+int	notice(Client *client, Ircserv& serv, Command& command);
 #endif

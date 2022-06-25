@@ -246,6 +246,7 @@ Ircserv::Ircserv(int port, const std::string& password):
 	commands["WHO"] = who;
 	commands["kill"] = kill;
 	commands["wallops"] = wallops;
+	commands["NOTICE"] = notice;
 }
 
 Ircserv::~Ircserv()
