@@ -24,8 +24,6 @@ int	mode(Client *client, Ircserv& serv, Command& command)
 		return (reply(RPL_UMODEIS, client, serv, command));
 	if (client->getNickname() != command.getParam(0))
 		return (reply(ERR_USERSDONTMATCH, client, serv, command));
-	if (!is_valid_mode(command.getParam(1)))
-		return (reply(ERR_UMODEUNKNOWNFLAG, client, serv, command));
 	if (is_add_or_remove_mode(command.getParam(1)) == '-')
 	{
 		for (size_t i = 1; i < command.getParam(1).length(); i++)
@@ -33,13 +31,25 @@ int	mode(Client *client, Ircserv& serv, Command& command)
 			std::cout << "le modes est |" << command.getParam(1)[i] << "|" << std::endl;
 			client->setMode(command.getParam(1)[i], false, serv);
 		}
+		//afficher erreur si il y a
+		if (!is_valid_mode(command.getParam(1)))
+			reply(ERR_UMODEUNKNOWNFLAG, client, serv, command);
+		//afficher les modes "Mode change [-i] for user dkor"
+		client->print("MODE " + client->getNickname() + " -" + client->getModes());
 	}
 	if (is_add_or_remove_mode(command.getParam(1)) == '+')
 	{
 		for (size_t i = 1; i < command.getParam(1).length(); i++)
 		{
-			client->setMode(command.getParam(1)[i], true, serv);
+			std::cout << "le modes est |" << command.getParam(1)[i] << "|" << std::endl;
+			if (command.getParam(1)[i] != OPERATOR)
+				client->setMode(command.getParam(1)[i], true, serv);
 		}
+		//afficher erreur si il y a
+		if (!is_valid_mode(command.getParam(1)))
+			reply(ERR_UMODEUNKNOWNFLAG, client, serv, command);
+		//afficher les modes "Mode change [+i] for user dkor"
+		client->print("MODE " + client->getNickname() + " +" + client->getModes());
 	}
 
 	return (0);

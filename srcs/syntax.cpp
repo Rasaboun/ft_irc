@@ -50,7 +50,7 @@ char     is_add_or_remove_mode(const std::string& mode)
 
 int     is_valid_client_mode(const char& mode)
 {
-    if (mode != 'o' && mode != 'w' && mode != 'i' && mode != 'a' && mode != '+' && mode != '-')
+    if (mode != 'o' && mode != 'w' && mode != 'i' && mode != '+' && mode != '-')
         return (0);
     return (1);
 }
