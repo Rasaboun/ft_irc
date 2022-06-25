@@ -8,6 +8,8 @@
 # define	TIMEOUT 		300
 # define	MYPING 			15
 # define	NOPASS_TIMEOUT	15
+# define	OP_PASSWORD		"operator123"
+
 class Ircserv
 {	
 	public:
@@ -36,6 +38,7 @@ class Ircserv
 	void								sendToClients(const std::string&) const;
 
 	const std::string&					getPassword() const;
+	const std::string&					getOpPassword() const;
 	const std::string&					getName() const;
 	const std::string					getPrefix() const;
 	Client*								getClient(const std::string& nickname) const;
@@ -48,6 +51,7 @@ class Ircserv
 
 	int									port;
 	const std::string					password;
+	const std::string					opPassword;
 	const std::string					name;
 	time_t								lastPing;
 	int									fd;
@@ -80,5 +84,6 @@ int		kick(Client *client, Ircserv& serv, Command& command);
 int		who(Client *client, Ircserv& serv, Command& command);
 int		kill(Client *client, Ircserv& serv, Command& command);
 int		wallops(Client *client, Ircserv& serv, Command& command);
-int	notice(Client *client, Ircserv& serv, Command& command);
+int		notice(Client *client, Ircserv& serv, Command& command);
+int		whois(Client *client, Ircserv& serv, Command& command);
 #endif

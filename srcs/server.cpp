@@ -81,3 +81,16 @@ int	who(Client *client, Ircserv& serv, Command& command)
 
 	return (0);
 }
+
+int	whois(Client *client, Ircserv& serv, Command& command)
+{
+	if (command.getNbParams() < 1)
+		return (reply(ERR_NEEDMOREPARAMS, client, serv, command));
+	
+	Client *cli	= serv.getClient(command.getParam(0));
+	if (!cli)
+        return (reply(ERR_NOSUCHNICK, client, serv, command, command.getParam(0)));
+	cli->whoisReplies(serv.getPrefix(), client);
+	return (reply(RPL_ENDOFWHOIS, client, serv, command, command.getParam(0)));
+
+}

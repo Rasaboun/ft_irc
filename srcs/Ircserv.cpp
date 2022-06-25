@@ -200,6 +200,7 @@ void				Ircserv::sendToClients(const std::string& message) const
 }
 
 const std::string& 	Ircserv::getPassword() const { return (this->password); }
+const std::string& 	Ircserv::getOpPassword() const { return (this->opPassword); }
 const std::string& 	Ircserv::getName() const { return (this->name); }
 const std::string	Ircserv::getPrefix() const { return (":" + this->name); }
 Client*				Ircserv::getClient(const std::string& nickname) const
@@ -230,6 +231,7 @@ std::vector<Client *>				Ircserv::getWallopsClients() const { return (this->wall
 Ircserv::Ircserv(int port, const std::string& password):
 		port(port),
 		password(password),
+		opPassword(OP_PASSWORD),
 		name(SERV_NAME),
 		lastPing(std::time(0))
 {
@@ -253,6 +255,7 @@ Ircserv::Ircserv(int port, const std::string& password):
 	commands["kill"] = kill;
 	commands["wallops"] = wallops;
 	commands["NOTICE"] = notice;
+	commands["WHOIS"] = whois;
 }
 
 Ircserv::~Ircserv()

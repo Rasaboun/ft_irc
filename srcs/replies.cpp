@@ -78,6 +78,8 @@ std::string   command_responses(int code, Client* client, Ircserv& serv, Command
             return(serv.getName() + " 1.0 (need to add available modes)");         
         case RPL_UMODEIS:         
             return("+" + client->getModes());
+        case RPL_ENDOFWHOIS:
+            return(param + " :End of /WHOIS");  
         case RPL_LISTSTART:
             return("Channel :Users Name");  
         case RPL_LISTEND:
@@ -90,6 +92,8 @@ std::string   command_responses(int code, Client* client, Ircserv& serv, Command
             return (command.getParam(0) + " :" + serv.getChannel(command.getParam(0))->getTopic());
         case RPL_INVITING:
             return (command.getParam(0) + " " + command.getParam(1));             
+        case RPL_YOUREOPER:
+            return (":You are now an IRC operator");
         default:
             break;
     }

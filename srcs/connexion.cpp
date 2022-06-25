@@ -84,8 +84,18 @@ int	oper(Client *client, Ircserv& serv, Command& command)
 {
 	if (command.getNbParams() < 2)
 		return (reply(ERR_NEEDMOREPARAMS, client, serv, command));
-	if (command.getParam(2) != serv.getPassword())
+	Client*	cli = serv.getClient(command.getParam(0));
+	if (!cli)
+        return (reply(ERR_NOSUCHNICK, client, serv, command, command.getParam(0)));
+	
+	if (command.getParam(1) != serv.getOpPassword())
 		return (reply(ERR_PASSWDMISMATCH, client, serv, command));
+	//cli->setMode(OPERATOR, true);
+	cli->print("MODE " + cli->getNickname() + " " + cli->getModes());
+	if (cli != client)
+		client->print("MODE " + cli->getNickname() + " " + cli->getModes());
+
+	reply(RPL_YOUREOPER, cli, serv, command);
 	return (0);
 }
 
