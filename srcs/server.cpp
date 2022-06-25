@@ -40,6 +40,7 @@ int	mode(Client *client, Ircserv& serv, Command& command)
 		std::cout << "MODE IS +" << std::endl;
 		client->setMode(command.getParam(1)[1], true);
 	}
+
 	return (0);
 }
 

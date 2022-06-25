@@ -40,6 +40,7 @@ class Ircserv
 	Channel*							getChannel(const std::string& name) const;
 	std::map<std::string, Channel *>	getChannels() const;
 	int									getNbChannels() const;
+	std::vector<Client *>				getWallopsClients() const;
 
 	private:
 
@@ -54,6 +55,7 @@ class Ircserv
 	std::map<int, Client *>				clients;
 	std::map<std::string, cmd_type>		commands;
 	std::map<std::string, Channel *>	channels;
+	std::vector<Client *>           	wallops_clients;
 };
 
 

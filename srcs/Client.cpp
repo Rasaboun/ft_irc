@@ -168,7 +168,6 @@ Client::Client(int fd, struct sockaddr_in address):
 	else
 		this->hostname = hostname;
 	
-	
 	modes['a'] = false;
 	modes['i'] = false;
 	modes['w'] = false;

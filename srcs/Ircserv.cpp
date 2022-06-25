@@ -74,6 +74,21 @@ void 	Ircserv::run()
 		{
 			removeClient(client);
 		}
+		if (client && client->getMode('w') == true)
+		{
+			wallops_clients.push_back(client);
+		}
+		if (client && !client->getMode('w') == false)
+		{
+			for (std::vector<Client *>::iterator it = wallops_clients.begin(); it != wallops_clients.end(); it++)
+    		{
+        		if (*it == client)
+        		{
+           			wallops_clients.erase(it);
+            		break ;
+        		}
+    		}
+		}
 	}
 
 	std::map<std::string, Channel *>::iterator ite = channels.begin();
@@ -204,6 +219,7 @@ Channel*			Ircserv::getChannel(const std::string& name) const
 std::map<std::string, Channel *>	Ircserv::getChannels() const { return (this->channels); }
 int									Ircserv::getNbChannels() const { return (channels.size()); }
 
+std::vector<Client *>				Ircserv::getWallopsClients() const { return (this->wallops_clients); }
 
 Ircserv::Ircserv(int port, const std::string& password):
 		port(port),
