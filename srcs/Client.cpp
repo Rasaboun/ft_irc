@@ -142,14 +142,31 @@ void						Client::setNickname(const std::string& new_nickname)
 }
 void						Client::setReason(const std::string& new_reason) { this->reason = new_reason; }
 void						Client::setState(const int new_state) { this->state = new_state; }
-void						Client::setMode(const char& mode, bool value)
+void						Client::setMode(const char& mode, bool value, Ircserv& serv)
 {
 	if (this->modes.count(mode) == 0)
 		return ;
-	this->modes[mode] = value;
+	if (mode != 'o')
+		this->modes[mode] = value;
+	if (mode == 'w')
+	{
+		if (value == true)
+			serv.addClientToWallops(this);
+		else
+			serv.removeClientFromWallops(this);
+	}
+	if (mode == 'o' && value == false)
+		this->modes[mode] = value;
 }
 void						Client::setLastPing(){ lastPing = std::time(0); }
 void						Client::setLastPong(){ lastPong = std::time(0); }
+
+int							Client::isOperator() const
+{
+	if (this->getMode('o') == true)
+		return (1);
+	return (0);
+}
 
 Client::Client(int fd, struct sockaddr_in address):
 			fd(fd),
@@ -167,7 +184,6 @@ Client::Client(int fd, struct sockaddr_in address):
 		syscall_error("getnameinfo");
 	else
 		this->hostname = hostname;
-	
 	
 	modes['a'] = false;
 	modes['i'] = false;

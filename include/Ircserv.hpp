@@ -24,8 +24,10 @@ class Ircserv
 	int									execCommand(Client* client, Command& command);
 
 	void								addChannel(const std::string& name);
+	void								addClientToWallops(Client *client);
 	void								removeClient(Client *client);
 	void								removeChannel(Channel *channel);
+	void								removeClientFromWallops(Client *client)
 
 	int									isChannel(const std::string& name) const ;
 	bool								isClient(const std::string& name) const;
@@ -43,6 +45,7 @@ class Ircserv
 	Channel*							getChannel(const std::string& name) const;
 	std::map<std::string, Channel *>	getChannels() const;
 	int									getNbChannels() const;
+	std::vector<Client *>				getWallopsClients() const;
 
 	private:
 
@@ -58,6 +61,7 @@ class Ircserv
 	std::map<int, Client *>				clients;
 	std::map<std::string, cmd_type>		commands;
 	std::map<std::string, Channel *>	channels;
+	std::vector<Client *>           	wallops_clients;
 };
 
 
