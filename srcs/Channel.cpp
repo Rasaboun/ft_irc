@@ -83,9 +83,6 @@ void                Channel::editTopic(Client* editor, const std::string& topic)
 {
     setTopic(topic);
     topic_editor = editor->getNickname();
-    std::time_t curr_time = std::time(NULL);
-    topic_time = convert_time(&curr_time);
-    std::cout << "topic time " << topic_time << std::endl;
     sendToClients(":" + editor->getFullname() +  " TOPIC " + name + " " + topic);
 }
 

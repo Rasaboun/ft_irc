@@ -73,9 +73,11 @@ std::string   command_responses(int code, Client* client, Ircserv& serv, Command
         case RPL_YOURHOST:         
             return("Your host is " + serv.getName() + ", running version 1.0");         
         case RPL_CREATED:         
-            return("This server was created today");   //Need to add correct date      
+            return("This server was created " + serv.getDate());   //Need to add correct date      
         case RPL_MYINFO:         
-            return(serv.getName() + " 1.0 (need to add available modes)");         
+            return(serv.getName() + " 1.0 " + CLIENTMODES + " " + CHANMODES);
+        case RPL_ISUPPORT:
+            return(serv.getSettings());         
         case RPL_UMODEIS:         
             return("+" + client->getModes());
         case RPL_ENDOFWHOIS:

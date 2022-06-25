@@ -57,7 +57,6 @@ class Channel
     std::string                     topic;
     std::string                     key;
     std::string                     topic_editor;
-    std::string                     topic_time;
     int                             limit;
 
     std::vector<Client *>           clients;

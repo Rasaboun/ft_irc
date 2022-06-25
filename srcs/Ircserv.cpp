@@ -32,17 +32,14 @@ void 	Ircserv::run()
 	if (poll(&client_fds[0], client_fds.size(), 5
 	 * 1000) == -1)
 		return ;
-	std::cout << clients.size() << " USERS CONNECTED\n";
 	if (std::time(0) - lastPing >= MYPING)
 	{
-		std::cout << "PING SEND" << std::endl;
 		sendPing();
 		lastPing = std::time(0);
 	}
 	if (client_fds[0].revents == POLLIN)
 	{
 		//accept new connection
-		std::cout << "New client connection\n";
 		struct sockaddr_in client_address;
 		socklen_t csin_len = sizeof(client_address);
 		int client_fd = accept(fd, (struct sockaddr *)&client_address, &csin_len);
@@ -182,7 +179,6 @@ void					Ircserv::sendPing()
 	{
 		if (now - it->second->getLastPong() >= TIMEOUT)
 		{
-			std::cout << "PING TIMEOUT" << std::endl;
 			it->second->setState(DCED);
 		}
 		else{
@@ -203,7 +199,18 @@ void				Ircserv::sendToClients(const std::string& message) const
 const std::string& 	Ircserv::getPassword() const { return (this->password); }
 const std::string& 	Ircserv::getOpPassword() const { return (this->opPassword); }
 const std::string& 	Ircserv::getName() const { return (this->name); }
+const std::string 	Ircserv::getDate() const { return (convert_time(this->date)); }
 const std::string	Ircserv::getPrefix() const { return (":" + this->name); }
+const std::string	Ircserv::getSettings() const 
+{
+	std::string res =	"CHANLIMIT=" + std::string(CHANTYPES) + ":" + ft_itoa(CHANLIMIT) + " " +\
+						"CHANMODES=" + std::string(CHANMODES) + " " +\
+						"CHANTYPES=" + std::string(CHANTYPES) + " " +\
+						"MODES=" + ft_itoa(std::string(CLIENTMODES).length()) + " " +\
+						"NICKLEN=" + ft_itoa(NICKLEN) + " ";
+	
+	return (res); 
+}
 Client*				Ircserv::getClient(const std::string& nickname) const
 {
 	for (std::map<int, Client *>::const_iterator it = clients.begin(); it != clients.end(); it++)
@@ -234,6 +241,7 @@ Ircserv::Ircserv(int port, const std::string& password):
 		password(password),
 		opPassword(OP_PASSWORD),
 		name(SERV_NAME),
+		date(std::time(0)),
 		lastPing(std::time(0))
 {
 	commands["CAP"] = cap;

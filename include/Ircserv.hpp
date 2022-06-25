@@ -41,6 +41,8 @@ class Ircserv
 	const std::string&					getOpPassword() const;
 	const std::string&					getName() const;
 	const std::string					getPrefix() const;
+	const std::string					getSettings() const;
+	const std::string					getDate() const;
 	Client*								getClient(const std::string& nickname) const;
 	Channel*							getChannel(const std::string& name) const;
 	std::map<std::string, Channel *>	getChannels() const;
@@ -53,6 +55,7 @@ class Ircserv
 	const std::string					password;
 	const std::string					opPassword;
 	const std::string					name;
+	time_t								date;
 	time_t								lastPing;
 	int									fd;
 	struct sockaddr_in					address;

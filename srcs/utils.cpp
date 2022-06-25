@@ -20,9 +20,9 @@ std::string		convert_code(int nb)
 	return (res);
 }
 
-std::string		convert_time(std::time_t* time)
+std::string		convert_time(std::time_t time)
 {
-	return (std::asctime(std::localtime(time)));
+	return (std::asctime(std::localtime(&time)));
 }
 
 std::vector<std::string>	split(std::string param, char c)

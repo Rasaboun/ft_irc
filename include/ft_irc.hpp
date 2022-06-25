@@ -45,9 +45,11 @@
 //Client modes
 #define     INVISIBLE  'i'
 #define     WALLOP     'w'
+#define     OPERATOR    'o'
 
 
 #define CHANMODES   "kilmnstbo"
+#define CLIENTMODES "iwo"
 #define	CHANLIMIT   10
 #define CHANTYPES   "#"
 #define NICKLEN     9
@@ -63,7 +65,7 @@ int 			            error(std::string message);
 int 			            syscall_error(std::string message);
 std::string		            ft_itoa(int nb);
 std::string		            convert_code(int nb);
-std::string		            convert_time(std::time_t* time);
+std::string		            convert_time(std::time_t time);
 std::string                 reply_prefix(const std::string& source, int code, const std::string& target);
 int         	            reply(int code, Client* client, Ircserv& serv, Command& params, const std::string& param = std::string());
 int         	            is_valid_nickname(const std::string& nickname);
@@ -80,6 +82,7 @@ std::vector<std::string>	split(std::string param, char c);
 #define		RPL_YOURHOST				002
 #define		RPL_CREATED					003
 #define		RPL_MYINFO					004
+#define     RPL_ISUPPORT                005
 #define     RPL_UMODEIS                 221
 #define     RPL_WHOISUSER               311
 #define     RPL_ENDOFWHO                315
@@ -96,7 +99,7 @@ std::vector<std::string>	split(std::string param, char c);
 #define     RPL_NAMREPLY                353
 #define     RPL_ENDOFNAMES              366
 #define     RPL_BANLIST                 367
-#define     RPL_ENDOFBANLIST             368
+#define     RPL_ENDOFBANLIST            368
 #define     RPL_YOUREOPER               381
 
 #define     ERR_NOSUCHNICK              401

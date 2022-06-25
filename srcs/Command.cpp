@@ -45,16 +45,6 @@ void			Command::setParam(size_t pos, const std::string& value)
 	params[pos] = value;
 }
 
-void			Command::display() const 
-{
-	std::cout << this->getName();
-	for (size_t i = 0; i < params.size(); i++)
-	{
-		std::cout << " " << params[i];
-	}
-	std::cout << std::endl;
-}
-
 std::string		Command::joinParams(size_t pos) const
 {
 	std::string res = "";

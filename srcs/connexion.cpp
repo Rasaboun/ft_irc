@@ -60,6 +60,7 @@ int	user(Client *client, Ircserv& serv, Command& command)
 	reply(RPL_YOURHOST, client, serv, command);
 	reply(RPL_CREATED, client, serv, command);
 	reply(RPL_MYINFO, client, serv, command);
+	reply(RPL_ISUPPORT, client, serv, command);
 	
 	return (0);
 }
@@ -109,7 +110,6 @@ int	quit(Client* client, Ircserv& serv, Command& command)
 
 int	kill(Client *client, Ircserv& serv, Command& command)
 {
-	std::cout << command.getNbParams() << std::endl;
 	if (command.getNbParams() < 2)
 		return (reply(ERR_NEEDMOREPARAMS, client, serv, command));
     
