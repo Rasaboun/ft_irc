@@ -41,7 +41,7 @@ class Channel
     void                            sendToClients(const std::string&) const;
     void                            sendTopic(Client *) const;
     void                            printClients(Client *) const;
-    void                            printInfos(Client * ) const;
+    void                            printInfos(Client *) const;
     int                             isClient(Client *) const;
     bool                            isOperator(Client *) const;
     bool                            isInvited(Client *) const;

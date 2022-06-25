@@ -71,7 +71,7 @@ void 						Client::receive(Ircserv& serv)
 		buffer[size] = 0;
 		this->data += buffer;
 	}
-
+	
 	size_t		position;
 	while ((position = this->data.find(crlf)) != std::string::npos)
 	{

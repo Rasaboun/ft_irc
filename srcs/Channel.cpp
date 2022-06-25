@@ -260,12 +260,7 @@ void                Channel::sendTopic(Client *client) const
 {
     std::string     res;
     if (topic.length())
-    {
         res = reply_prefix(serv->getName(), RPL_TOPIC, client->getFullname()) + name + " " + topic;
-        client->print(res);
-        res = reply_prefix(serv->getName(), RPL_TOPICWHOTIME, client->getNickname()) + name + \
-                + " " + topic_editor + " " + topic_time;
-    }
     else
         res = reply_prefix(serv->getName(), RPL_NOTOPIC, client->getFullname()) + name + " No topic is set";
     client->print(res);
@@ -351,8 +346,12 @@ void                Channel::printWho(Client* target) const
 
     for (std::vector<Client *>::const_iterator it = clients.begin(); it != clients.end(); it++)
     {
+        if (isOperator(*it))
+            base += "@";
+        else
+            base += "~";
         target->print(base + (*it)->getUsername() + " " + (*it)->getHostname() + " " + serv->getName()\
-                     + " " + (*it)->getNickname() + " H " + (*it)->getRealname());
+                     + " " + (*it)->getNickname() + " H :0 " + (*it)->getRealname().substr(1));
     }
 }
 
