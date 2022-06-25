@@ -18,8 +18,8 @@ int	pass(Client *client, Ircserv& serv, Command& command)
 		client->setState(NEED_NICK);
 	else
 	{
-		client->setFailedPass();
 		fatal_error(client->getFd(), "Wrong password");
+		client->setState(DCED);
 	}
 	return (0);
 }

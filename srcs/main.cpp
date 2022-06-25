@@ -33,7 +33,7 @@ int main(int argc, char **argv)
 	
 	signal(SIGINT, signal_handler);
 
-	Ircserv serv(port, "irc");
+	Ircserv serv(port, password);
 	if (serv.setup())
 		return (1);
 	

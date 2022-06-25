@@ -40,7 +40,7 @@ $(NAME) :		$(OBJS)
  
 
 $(OBJS): $(DIR_OBJS)/%.o : $(DIR_SRCS)/%.cpp | $(DIR_OBJS)
-	@clang++ $(HEADERS) -g -c $< -o $@
+	@clang++ $(FLAGS) $(HEADERS) -g -c $< -o $@
 	@echo Compiling : $< "Okay"
 
 $(DIR_OBJS):
