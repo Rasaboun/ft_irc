@@ -69,7 +69,13 @@ int                Channel::addOperator(Client* client)
     operators.push_back(client);
     return (0);
 }
-void                Channel::addBan(Client* client) { banned.push_back(client); }
+int               Channel::addBan(Client* client) 
+{
+    if (!client)
+        return (1);
+    banned.push_back(client);
+    return (0);
+}
 
 void                Channel::setTopic(const std::string& topic){ this->topic = topic; } 
 
@@ -87,10 +93,7 @@ void                Channel::editTopic(Client* editor, const std::string& topic)
 int               Channel::setMode(char mode, const std::string& param)
 {
     if (mode == BAN)
-    {
-        addBan(serv->getClient(param));
-        return (0);
-    }
+        return (addBan(serv->getClient(param)));
     if (mode == CHANOP)
     {
         return (addOperator(serv->getClient(param)));
@@ -108,10 +111,7 @@ int               Channel::setMode(char mode, const std::string& param)
 int               Channel::unsetMode(char mode, const std::string& param)
 {
     if (mode == BAN)
-    {
-        removeBan(serv->getClient(param));
-        return (0);
-    }
+        return (removeBan(serv->getClient(param)));  
     if (mode == CHANOP)
         return (removeOperator(serv->getClient(param)));
     modes[mode] = false;  
@@ -232,10 +232,10 @@ void                Channel::removeInvite(Client *client)
     }
 }
 
-void              Channel::removeBan(Client *client)
+int                   Channel::removeBan(Client *client)
 {
     if (!client)
-        return ;
+        return (1);
     for (std::vector<Client *>::iterator it = banned.begin(); it != banned.end(); it++)
     {
         if (*it == client)
@@ -244,6 +244,7 @@ void              Channel::removeBan(Client *client)
             break ;
         }
     }
+    return (0);
 }
 
 
@@ -288,6 +289,17 @@ void                Channel::printInfos(Client *client) const
     client->print(res + name + " " + ft_itoa(clients.size()) + " :" + topic);
 }
 
+void                 Channel::printBanList(Client *target) const
+{
+    std::string base = reply_prefix(serv->getName(), RPL_BANLIST, target->getNickname()) + name + " ";
+
+    for (std::vector<Client *>::const_iterator it = banned.begin(); it != banned.end(); it++)
+    {
+        target->print(base + (*it)->getNickname());
+    }
+    target->print(reply_prefix(serv->getName(), RPL_ENDOFBANLIST, target->getNickname()) + name + " :End of channel ban list");
+}
+
 int                 Channel::isClient(Client *client) const
 {
     for (std::vector<Client *>::const_iterator it = clients.begin(); it != clients.end(); it++)
@@ -296,7 +308,6 @@ int                 Channel::isClient(Client *client) const
             return (1);
     }
     return (0);
-
 }
 
 bool                Channel::isOperator(Client *client) const
@@ -346,12 +357,15 @@ void                Channel::printWho(Client* target) const
 
     for (std::vector<Client *>::const_iterator it = clients.begin(); it != clients.end(); it++)
     {
-        if (isOperator(*it))
-            base += "@";
-        else
-            base += "~";
-        target->print(base + (*it)->getUsername() + " " + (*it)->getHostname() + " " + serv->getName()\
-                     + " " + (*it)->getNickname() + " H :0 " + (*it)->getRealname().substr(1));
+		if (!(*it)->getMode(INVISIBLE) || ((*it)->getMode(INVISIBLE) && !sharing_channel(target, *it)))
+        {
+            if (isOperator(*it))
+                base += "@";
+            else
+                base += "~";
+            target->print(base + (*it)->getUsername() + " " + (*it)->getHostname() + " " + serv->getName()\
+                        + " " + (*it)->getNickname() + " H :0 " + (*it)->getRealname().substr(1));
+        }
     }
 }
 

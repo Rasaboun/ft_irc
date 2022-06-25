@@ -27,7 +27,7 @@ class Ircserv
 	void								addClientToWallops(Client *client);
 	void								removeClient(Client *client);
 	void								removeChannel(Channel *channel);
-	void								removeClientFromWallops(Client *client)
+	void								removeClientFromWallops(Client *client);
 
 	int									isChannel(const std::string& name) const ;
 	bool								isClient(const std::string& name) const;

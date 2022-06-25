@@ -42,6 +42,11 @@
 //Channel permissions
 #define     OPERATOR    'o'
 
+//Client modes
+#define     INVISIBLE  'i'
+#define     WALLOP     'w'
+
+
 #define CHANMODES   "kilmnstbo"
 #define	CHANLIMIT   10
 #define CHANTYPES   "#"
@@ -68,6 +73,7 @@ int         	            is_valid_mode(const std::string& mode);
 int                         is_valid_channel(const std::string& chan);
 int                         is_chan_mode(char mode);
 int                         is_param_mode(char mode);
+bool						sharing_channel(Client* client1, Client* client2);
 std::vector<std::string>	split(std::string param, char c);
 
 #define		RPL_WELCOME					001
@@ -89,6 +95,8 @@ std::vector<std::string>	split(std::string param, char c);
 #define     RPL_WHOREPLY                352
 #define     RPL_NAMREPLY                353
 #define     RPL_ENDOFNAMES              366
+#define     RPL_BANLIST                 367
+#define     RPL_ENDOFBANLIST             368
 #define     RPL_YOUREOPER               381
 
 #define     ERR_NOSUCHNICK              401
