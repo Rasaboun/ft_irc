@@ -22,8 +22,10 @@ class Ircserv
 	int									execCommand(Client* client, Command& command);
 
 	void								addChannel(const std::string& name);
+	void								addClientToWallops(Client *client);
 	void								removeClient(Client *client);
 	void								removeChannel(Channel *channel);
+	void								removeClientFromWallops(Client *client)
 
 	int									isChannel(const std::string& name) const ;
 	bool								isClient(const std::string& name) const;

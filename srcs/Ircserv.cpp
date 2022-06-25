@@ -74,21 +74,6 @@ void 	Ircserv::run()
 		{
 			removeClient(client);
 		}
-		if (client && client->getMode('w') == true)
-		{
-			wallops_clients.push_back(client);
-		}
-		if (client && !client->getMode('w') == false)
-		{
-			for (std::vector<Client *>::iterator it = wallops_clients.begin(); it != wallops_clients.end(); it++)
-    		{
-        		if (*it == client)
-        		{
-           			wallops_clients.erase(it);
-            		break ;
-        		}
-    		}
-		}
 	}
 
 	std::map<std::string, Channel *>::iterator ite = channels.begin();
@@ -121,6 +106,13 @@ void	Ircserv::addChannel(const std::string& name)
 	this->channels[name] = new Channel(this, name);
 }
 
+void	Ircserv::addClientToWallops(Client *client)
+{
+	if (!client)
+		return ;
+	this->wallops_clients.push_back(client);
+}
+
 void	Ircserv::removeClient(Client* client)
 {
 	for (std::vector<pollfd>::iterator fd_it = client_fds.begin(); fd_it != client_fds.end(); fd_it++)
@@ -147,6 +139,20 @@ void	Ircserv::removeChannel(Channel* channel)
 {
 	channels.erase(channel->getName());
 	delete channel;
+}
+
+void	Ircserv::removeClientFromWallops(Client *client)
+{
+	if (!client)
+		return ;
+	for (std::vector<Client *>::iterator it = wallops_clients.begin(); it != wallops_clients.end(); it++)
+    {
+    	if (*it == client)
+    	{
+    		this->wallops_clients.erase(it);
+    		break ;
+    	}
+    }
 }
 
 int		Ircserv::isChannel(const std::string& name) const { return (this->channels.count(name)); }

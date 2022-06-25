@@ -46,7 +46,7 @@ class Client
 	void						setRealname(const std::string&);
 	void						setNickname(const std::string&);
 	void						setReason(const std::string&);
-	void						setMode(const char& mode, bool value);
+	void						setMode(const char& mode, bool value, Ircserv& serv);
 	void						setLastPing();
 	void						setLastPong();
 
@@ -54,6 +54,8 @@ class Client
 	void						sendMessages();
 	void						addChannel(const std::string&);
 	void						removeChannel(const std::string& channel);
+
+	int							isOperator() const;
 
 	private:
 
