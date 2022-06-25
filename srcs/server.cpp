@@ -28,14 +28,15 @@ int	mode(Client *client, Ircserv& serv, Command& command)
 		return (reply(ERR_UMODEUNKNOWNFLAG, client, serv, command));
 	if (is_add_or_remove_mode(command.getParam(1)) == '-')
 	{
-		for (int i = 1; i < command.getParam(1).length(); i++)
+		for (size_t i = 1; i < command.getParam(1).length(); i++)
 		{
+			std::cout << "le modes est |" << command.getParam(1)[i] << "|" << std::endl;
 			client->setMode(command.getParam(1)[i], false, serv);
 		}
 	}
 	if (is_add_or_remove_mode(command.getParam(1)) == '+')
 	{
-		for (int i = 1; i < command.getParam(1).length(); i++)
+		for (size_t i = 1; i < command.getParam(1).length(); i++)
 		{
 			client->setMode(command.getParam(1)[i], true, serv);
 		}
