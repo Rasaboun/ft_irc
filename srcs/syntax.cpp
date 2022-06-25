@@ -37,7 +37,7 @@ int     is_valid_nickname(const std::string& nickname)
 
 char     is_add_or_remove_mode(const std::string& mode)
 {
-    char    sign = '?m';
+    char    sign = '?';
     for (int i = 0; i < mode.length() && (mode[i] == '-' || mode[i] == '+'); i++)
     {
         if (mode[i] == '-')
