@@ -90,7 +90,7 @@ int	oper(Client *client, Ircserv& serv, Command& command)
 	
 	if (command.getParam(1) != serv.getOpPassword())
 		return (reply(ERR_PASSWDMISMATCH, client, serv, command));
-	//cli->setMode(OPERATOR, true);
+	cli->setMode(OPERATOR, true, serv);
 	cli->print("MODE " + cli->getNickname() + " " + cli->getModes());
 	if (cli != client)
 		client->print("MODE " + cli->getNickname() + " " + cli->getModes());
