@@ -42,13 +42,11 @@ void					Client::handle_input(Ircserv& serv)
 		this->commands.erase(it);
 		
 	}
-	if (previous_state == NEED_PASS && this->state == NEED_PASS && !this->failedPass)	// If wrong pass or no pass -> close connection
+	if (this->state == NEED_PASS && previous_state == NEED_PASS)
 	{
-		fatal_error(this->fd, "Connection password is required");
+		fatal_error(this->fd, "Password required");
 		this->state = DCED;
 	}
-	if (this->failedPass)
-		this->state = DCED;
 	if (this->state != previous_state && this->state != DCED) 		// If successfully registered check other cmds
 		handle_input(serv);
 	sendMessages();
@@ -150,8 +148,6 @@ void						Client::setMode(const char& mode, bool value)
 		return ;
 	this->modes[mode] = value;
 }
-
-void						Client::setFailedPass(){ failedPass = true; }
 void						Client::setLastPing(){ lastPing = std::time(0); }
 void						Client::setLastPong(){ lastPong = std::time(0); }
 
@@ -161,7 +157,6 @@ Client::Client(int fd, struct sockaddr_in address):
 			username("*"),
 			realname("*"),
 			nickname("*"),
-			failedPass(false),
 			lastPing(std::time(0)),
 			lastPong(std::time(0))
 {
@@ -172,7 +167,8 @@ Client::Client(int fd, struct sockaddr_in address):
 		syscall_error("getnameinfo");
 	else
 		this->hostname = hostname;
-
+	
+	
 	modes['a'] = false;
 	modes['i'] = false;
 	modes['w'] = false;

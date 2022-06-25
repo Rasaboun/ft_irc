@@ -47,7 +47,6 @@ class Client
 	void						setNickname(const std::string&);
 	void						setReason(const std::string&);
 	void						setMode(const char& mode, bool value);
-	void						setFailedPass();
 	void						setLastPing();
 	void						setLastPong();
 
@@ -73,7 +72,6 @@ class Client
 	std::vector<Message>			messages;
 	std::vector<std::string>		channels;
 
-	bool							failedPass;
 	time_t							lastPing;
 	time_t							lastPong;
 
