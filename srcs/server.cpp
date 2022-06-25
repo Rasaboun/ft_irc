@@ -34,32 +34,28 @@ int	mode(Client *client, Ircserv& serv, Command& command)
 		return (reply(ERR_USERSDONTMATCH, client, serv, command));
 	std::string mode = command.getParam(1);
 	std::string modifiedModes;
+	if (!is_valid_mode(mode))
+		reply(ERR_UMODEUNKNOWNFLAG, client, serv, command);
 	if (is_add_or_remove_mode(mode) == '-')
 	{
 		for (size_t i = 1; i < mode.length(); i++)
 		{
-			std::string mode 
 			std::cout << "le modes est |" << mode[i] << "|" << std::endl;
-			if ((client->setMode(mode[i], false, serv)) && modifiedModes.find(mode[i]) != std::string::npos)
+			if ((client->setMode(mode[i], false, serv)) && modifiedModes.find(mode[i]) == std::string::npos)
 				modifiedModes += mode[i]; 
 		}
-		if (!is_valid_mode(mode))
-			reply(ERR_UMODEUNKNOWNFLAG, client, serv, command);
 		if (modifiedModes.length() > 0)
 			client->print("MODE " + client->getNickname() + " -" + modifiedModes);
 	}
 	if (is_add_or_remove_mode(mode) == '+')
 	{
-		std::string	actual_modes(client->getModes());
 		for (size_t i = 1; i < mode.length(); i++)
 		{
 			std::cout << "le modes est |" << mode[i] << "|" << std::endl;
 			if (mode[i] != OPERATOR)
-				if ((client->setMode(mode[i], true, serv)) && modifiedModes.find(mode[i]) != std::string::npos)
+				if ((client->setMode(mode[i], true, serv)) && modifiedModes.find(mode[i]) == std::string::npos)
 					modifiedModes += mode[i];
 		}
-		if (!is_valid_mode(mode))
-			reply(ERR_UMODEUNKNOWNFLAG, client, serv, command);
 		if (modifiedModes.length() > 0)
 			client->print("MODE " + client->getNickname() + " +" + modifiedModes);
 	}
