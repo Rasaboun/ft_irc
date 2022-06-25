@@ -170,10 +170,7 @@ Client::Client(int fd, struct sockaddr_in address):
 	modes['a'] = false;
 	modes['i'] = false;
 	modes['w'] = false;
-	modes['r'] = false;
 	modes['o'] = false;
-	modes['O'] = false;
-	modes['s'] = false;
 }
 
 void						Client::addMessage(const Message& message) { messages.push_back(message); }

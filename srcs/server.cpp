@@ -26,10 +26,20 @@ int	mode(Client *client, Ircserv& serv, Command& command)
 		return (reply(ERR_USERSDONTMATCH, client, serv, command));
 	if (!is_valid_mode(command.getParam(1)))
 		return (reply(ERR_UMODEUNKNOWNFLAG, client, serv, command));
-	if (command.getParam(1)[0] == '-')
+	//if (command.getParam(1)[0] == '-')
+	//	client->setMode(command.getParam(1)[1], false);
+	//else
+	//	client->setMode(command.getParam(1)[1], true);
+	if (is_add_or_remove_mode(command.getParam(1)) == '-')
+	{
+		std::cout << "MODE IS -" << std::endl;
 		client->setMode(command.getParam(1)[1], false);
-	else
+	}
+	if (is_add_or_remove_mode(command.getParam(1)) == '+')
+	{
+		std::cout << "MODE IS +" << std::endl;
 		client->setMode(command.getParam(1)[1], true);
+	}
 	return (0);
 }
 

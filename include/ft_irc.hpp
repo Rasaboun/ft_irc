@@ -62,6 +62,8 @@ std::string		            convert_time(std::time_t* time);
 std::string                 reply_prefix(const std::string& source, int code, const std::string& target);
 int         	            reply(int code, Client* client, Ircserv& serv, Command& params, const std::string& param = std::string());
 int         	            is_valid_nickname(const std::string& nickname);
+char                        is_add_or_remove_mode(const std::string& mode);
+int                         is_valid_client_mode(const char& mode);
 int         	            is_valid_mode(const std::string& mode);
 int                         is_valid_channel(const std::string& chan);
 int                         is_chan_mode(char mode);
