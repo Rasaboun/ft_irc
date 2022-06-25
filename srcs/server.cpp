@@ -40,7 +40,6 @@ int	mode(Client *client, Ircserv& serv, Command& command)
 	{
 		for (size_t i = 1; i < mode.length(); i++)
 		{
-			std::cout << "le modes est |" << mode[i] << "|" << std::endl;
 			if ((client->setMode(mode[i], false, serv)) && modifiedModes.find(mode[i]) == std::string::npos)
 				modifiedModes += mode[i]; 
 		}
@@ -51,7 +50,6 @@ int	mode(Client *client, Ircserv& serv, Command& command)
 	{
 		for (size_t i = 1; i < mode.length(); i++)
 		{
-			std::cout << "le modes est |" << mode[i] << "|" << std::endl;
 			if (mode[i] != OPERATOR)
 				if ((client->setMode(mode[i], true, serv)) && modifiedModes.find(mode[i]) == std::string::npos)
 					modifiedModes += mode[i];

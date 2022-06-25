@@ -142,8 +142,11 @@ void						Client::setReason(const std::string& new_reason) { this->reason = new_
 void						Client::setState(const int new_state) { this->state = new_state; }
 int							Client::setMode(const char& mode, bool value, Ircserv& serv)
 {
+	bool	changed(false);
 	if (this->modes.count(mode) == 0)
 		return (0);
+	if (this->modes[mode] != value)
+		changed = true;
 	this->modes[mode] = value;
 	if (mode == 'w')
 	{
@@ -152,7 +155,7 @@ int							Client::setMode(const char& mode, bool value, Ircserv& serv)
 		else
 			serv.removeClientFromWallops(this);
 	}
-	return (1);
+	return ((changed ? 1 : 0));
 }
 void						Client::setLastPing(){ lastPing = std::time(0); }
 void						Client::setLastPong(){ lastPong = std::time(0); }

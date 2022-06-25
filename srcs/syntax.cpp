@@ -23,18 +23,6 @@ int     is_valid_nickname(const std::string& nickname)
     return (1);
 }
 
-// int     is_valid_mode(const std::string& mode)
-// {
-//     if (mode.length() != 2)
-//         return (0);
-//     if (mode[0] != '+' && mode[0] != '-')
-//         return (0);
-//     if (mode[1] != 'a' && mode[1] != 'i' && mode[1] != 'w' && mode[1] != 'r' && mode[1] != 'o' \
-//                         && mode[1] != 'O' && mode[1] != 's')
-//         return (0);
-//     return (1);
-// }
-
 char     is_add_or_remove_mode(const std::string& mode)
 {
     char    sign = '?';
@@ -57,7 +45,6 @@ int     is_valid_client_mode(const char& mode)
 
 int     is_valid_mode(const std::string& mode)
 {
-    std::cout << " le MODE = |" << mode << "|" << std::endl;
     if (mode.length() <= 1)
         return (0);
     if (mode[0] != '+' && mode[0] != '-')
