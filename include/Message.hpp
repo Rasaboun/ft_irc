@@ -10,8 +10,8 @@ class Message
 {
     public:
 
-    Message(const std::string& sender, Client *, const std::string& content);
-    Message(const std::string& sender, Channel *channel, const std::string& content);
+    Message(const std::string& sender, Client *, const std::string& content, bool notice);
+    Message(const std::string& sender, Channel *channel, const std::string& content, bool notice);
 
     void            addTarget(Client* target);
 
@@ -23,6 +23,7 @@ class Message
     std::vector<Client *>   targets;
     std::string             content;
     std::string             channelName;
+    bool                    notice;
 };
 
 #endif
