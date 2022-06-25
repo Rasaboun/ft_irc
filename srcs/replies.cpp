@@ -24,7 +24,9 @@ std::string     error_replies(int code, Client* client, Ircserv& serv, Command& 
         case ERR_NORECIPIENT:
             return(":No recipient given " + command.getName());    
         case ERR_NOTEXTTOSEND:
-            return(":No text to send");     
+            return(":No text to send");  
+        case ERR_UNKNOWNCOMMAND:
+            return(command.getName() + " :Unknown command");          
         case ERR_NONICKNAMEGIVEN:
             return(":No nickname given");             
         case ERR_ERRONEUSNICKNAME:
@@ -42,13 +44,15 @@ std::string     error_replies(int code, Client* client, Ircserv& serv, Command& 
         case ERR_ALREADYREGISTERED:
             return(":Unautorized command (already registered)");             
         case ERR_PASSWDMISMATCH:
-            return(":Password incorrect");             
+            return(" :Password incorrect");             
         case ERR_CHANNELISFULL:
             return(param + " :Cannot join channel (+l)");
         case ERR_BANNEDFROMCHAN:
             return(param + " :Cannot join channel (+b)");                    
         case ERR_CHANOPRIVISNEEDED:
-            return(command.getParam(0) + " :You're not channel operator");                 
+            return(command.getParam(0) + " :You're not channel operator");
+        case ERR_NOPRIVILEGES:
+            return(" :Permission denied- You're not an IRC operator");                    
         case ERR_UMODEUNKNOWNFLAG:
             return(":Unknown MODE flag");             
         case ERR_USERSDONTMATCH:
@@ -96,7 +100,7 @@ std::string   command_responses(int code, Client* client, Ircserv& serv, Command
 int     reply(int code, Client* client, Ircserv& serv, Command& command, const std::string& param)
 {
     std::string     res = reply_prefix(serv.getName(), code, client->getNickname());
-    (void) param;
+
     if (code > 400)
         res += error_replies(code, client, serv, command, param);
     else 

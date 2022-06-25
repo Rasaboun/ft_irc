@@ -37,13 +37,17 @@ void					Client::handle_input(Ircserv& serv)
 			}
 		}
 		
-		serv.execCommand(this, *it);
+		if (serv.execCommand(this, *it))
+			reply(ERR_UNKNOWNCOMMAND, this, serv, *it);
 		this->commands.erase(it);
 		
 	}
-	if (this->failedPass == true) // If wrong pass -> close connection
-		this->state = DCED; 
-	if (this->state != previous_state && this->state != DCED) // If successfully registered check other cmds
+	if (previous_state == NEED_PASS && this->state == NEED_PASS)	// If wrong pass or no pass -> close connection
+	{
+		this->print(reply_prefix(serv.getName(), ERR_PASSWDMISMATCH, nickname) + ":Password incorrect");
+		this->state = DCED;
+	}
+	if (this->state != previous_state && this->state != DCED) 		// If successfully registered check other cmds
 		handle_input(serv);
 	sendMessages();
 }

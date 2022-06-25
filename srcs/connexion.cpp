@@ -1,5 +1,13 @@
 #include "Ircserv.hpp"
 
+int	cap(Client *client, Ircserv& serv, Command& command)
+{
+	(void)client;
+	(void)serv;
+	(void)command;
+	return (0);
+}
+
 int	pass(Client *client, Ircserv& serv, Command& command)
 {
 	if (client->getState() != NEED_PASS)
@@ -10,10 +18,8 @@ int	pass(Client *client, Ircserv& serv, Command& command)
 		client->setState(NEED_NICK);
 	else
 	{
-		reply(ERR_PASSWDMISMATCH, client, serv, command);
 		client->setFailedPass();
-		client->setState(DCED); //Close connection if wrong pass;
-		return (0); //(fatal_error(client->getFd(), "Wrong password. Closing connection"));
+		fatal_error(client->getFd(), "Wrong password");
 	}
 	return (0);
 }

@@ -19,7 +19,7 @@ class Ircserv
 	
 	int									setup();
 	void								run();
-	void								execCommand(Client* client, Command& command);
+	int									execCommand(Client* client, Command& command);
 
 	void								addChannel(const std::string& name);
 	void								removeClient(Client *client);
@@ -57,6 +57,7 @@ class Ircserv
 };
 
 
+int		cap(Client *client, Ircserv& serv, Command& command);
 int		pass(Client *client, Ircserv& serv, Command& command);
 int		nick(Client *client, Ircserv& serv, Command& command);
 int		user(Client *client, Ircserv& serv, Command& command);
@@ -67,11 +68,13 @@ int		msg(Client *client, Ircserv& serv, Command& command);
 int		join(Client *client, Ircserv& serv, Command& command);
 int		part(Client *client, Ircserv& serv, Command& command);
 int		ping(Client *client, Ircserv& serv, Command& command);
+int		pong(Client *client, Ircserv& serv, Command& command);
 int		topic(Client *client, Ircserv& serv, Command& command);
 int		list(Client *client, Ircserv& serv, Command& command);
 int		invite(Client *client, Ircserv& serv, Command& command);
 int		kick(Client *client, Ircserv& serv, Command& command);
 int		who(Client *client, Ircserv& serv, Command& command);
-int	kill(Client *client, Ircserv& serv, Command& command);
+int		kill(Client *client, Ircserv& serv, Command& command);
+int		wallops(Client *client, Ircserv& serv, Command& command);
 
 #endif
