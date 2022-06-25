@@ -88,13 +88,14 @@ void 	Ircserv::run()
 	
 }
 
-void	Ircserv::execCommand(Client* client, Command& command)
+int		Ircserv::execCommand(Client* client, Command& command)
 {
 
 	std::map<std::string, Ircserv::cmd_type >::iterator it = commands.find(command.getName());
 	if (it == commands.end())
-		return ;
+		return (1);
 	(*it->second)(client, *this, command);
+	return (0);
 }
 
 
@@ -210,6 +211,7 @@ Ircserv::Ircserv(int port, const std::string& password):
 		name(SERV_NAME),
 		lastPing(std::time(0))
 {
+	commands["CAP"] = cap;
 	commands["PASS"] = pass;
 	commands["NICK"] = nick;
 	commands["USER"] = user;
@@ -220,12 +222,14 @@ Ircserv::Ircserv(int port, const std::string& password):
 	commands["JOIN"] = join;
 	commands["PART"] = part;
 	commands["PING"] = ping;
+	commands["PONG"] = pong;
 	commands["TOPIC"] = topic;
 	commands["LIST"] = list;
 	commands["INVITE"] = invite;
 	commands["KICK"] = kick;
 	commands["WHO"] = who;
 	commands["kill"] = kill;
+	commands["wallops"] = wallops;
 }
 
 Ircserv::~Ircserv()

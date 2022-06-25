@@ -93,6 +93,7 @@ std::vector<std::string>	split(std::string param, char c);
 #define     ERR_TOOMANYTARGETS          407
 #define     ERR_NORECIPIENT             411
 #define     ERR_NOTEXTTOSEND            412
+#define     ERR_UNKNOWNCOMMAND          421
 #define     ERR_NONICKNAMEGIVEN         431
 #define     ERR_ERRONEUSNICKNAME        432
 #define     ERR_NICKNAMEINUSE           433
@@ -106,6 +107,7 @@ std::vector<std::string>	split(std::string param, char c);
 #define     ERR_INVITEONLYCHAN          473
 #define     ERR_BANNEDFROMCHAN          474
 #define     ERR_BADCHANNELKEY           475
+#define     ERR_NOPRIVILEGES            481
 #define     ERR_CHANOPRIVISNEEDED       482
 #define     ERR_UMODEUNKNOWNFLAG        501
 #define     ERR_USERSDONTMATCH          502

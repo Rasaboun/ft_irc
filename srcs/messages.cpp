@@ -38,3 +38,26 @@ int	msg(Client *client, Ircserv& serv, Command& command)
     }
     return (0);
 }
+
+int	wallops(Client *client, Ircserv& serv, Command& command)
+{
+    if (command.getNbParams() == 0)
+        return (reply(ERR_NEEDMOREPARAMS, client, serv, command));
+  /*  if (!serv.isOperator(client))
+        return (reply(ERR_NOPRIVILEGES, client, serv, command));
+    
+    std::string             message = command.joinParams(0);
+    if (message.length() == 0)
+        return (1);
+    message = ":" + client->getNickname() + " WALLOPS " + message;
+
+    std::vector<Client *>   wallops = serv.getClients();
+    for (std::vector<Client *>::iterator it = wallops.begin(); it != wallops.end(); it++)
+    {
+        if (serv.isWallop(*it))
+            (*it)->print(message);
+    }
+    */
+    return (0);
+    
+}
