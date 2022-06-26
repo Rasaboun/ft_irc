@@ -22,8 +22,10 @@ int	join(Client *client, Ircserv& serv, Command& command)
             new_chan = 1;
         }
         Channel *channel = serv.getChannel(*it);
-        if (new_chan)
+        if (new_chan || client->isOperator())
+        {
             channel->addOperator(client);
+        }
         if (channel->getMode(LIMIT) && channel->getNbClients() >= channel->getLimit())
         {
             reply(ERR_CHANNELISFULL, client, serv, command, *it);

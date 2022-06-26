@@ -76,6 +76,7 @@ int                         is_valid_channel(const std::string& chan);
 int                         is_chan_mode(char mode);
 int                         is_param_mode(char mode);
 bool						sharing_channel(Client* client1, Client* client2);
+void						print_log(const std::string& message);
 std::vector<std::string>	split(std::string param, char c);
 
 #define		RPL_WELCOME					001

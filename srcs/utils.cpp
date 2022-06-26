@@ -62,3 +62,11 @@ bool						sharing_channel(Client* client1, Client* client2)
 	}
 	return (false);
 }
+
+void						print_log(const std::string& message)
+{
+	time_t	secs = std::time(0);
+	struct tm *curr_time = localtime(&secs);
+
+	std::cout << "[" << curr_time->tm_hour << ":" << curr_time->tm_min << ":" << curr_time->tm_sec << "] " << message << std::endl;
+}

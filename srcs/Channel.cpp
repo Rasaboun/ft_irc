@@ -53,12 +53,16 @@ void                Channel::addClient(Client* client, const std::string& key)
     //Send join to all channel's clients
     client->addChannel(name);
     clients.push_back(client);
+	print_log("Client " + client->getNickname() + " joining channel " + name);
     sendToClients(":" + client->getFullname() + " JOIN " + name);
-
+    
+    
     if (topic.length())
         sendTopic(client);
 
     printClients(client);
+    if (client->isOperator())
+        sendToClients(":" + client->getFullname() + " MODE " + name + " +o " + client->getNickname() );
     
 }
 
@@ -197,6 +201,7 @@ void                Channel::removeClient(Client *client, const std::string& mes
             sendToClients(":" + client->getFullname()+ " PART " + name + " " + message);
             clients.erase(it);
             client->removeChannel(name);
+	        print_log("Client " + client->getNickname() + " leaving channel " + name);
             break ;
         }
     }
@@ -373,6 +378,7 @@ Channel::Channel(Ircserv*   serv, const std::string& name):
                 limit(MAX_INT),
                 serv(serv)
 {
+	print_log("Creating new channel " + name);
     modes['i'] = false;
 	modes['k'] = false;
 	modes['l'] = false;
@@ -384,5 +390,5 @@ Channel::Channel(Ircserv*   serv, const std::string& name):
 
 Channel::~Channel()
 {
-
+    print_log("Destroying new channel " + name);
 }

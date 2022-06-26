@@ -36,10 +36,11 @@ int main(int argc, char **argv)
 	Ircserv serv(port, password);
 	if (serv.setup())
 		return (1);
-	
+	print_log("The server started successfully");
 	while (up)
 	{
 		serv.run();
 	}
+	print_log("\nShutting down server.");
 	return (0);
 }
