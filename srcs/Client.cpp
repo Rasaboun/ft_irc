@@ -42,7 +42,7 @@ void					Client::handle_input(Ircserv& serv)
 		this->commands.erase(it);
 		
 	}
-	if (this->state == NEED_PASS && previous_state == NEED_PASS)
+	if (this->state == NEED_PASS && previous_state == NEED_PASS && (std::time(0) - connecTime) > NOPASS_TIMEOUT)
 	{
 		fatal_error(this->fd, "Password required");					// If no pass ->  disconnect
 		this->state = DCED;
@@ -173,11 +173,12 @@ Client::Client(int fd, struct sockaddr_in address):
 			username("*"),
 			realname("*"),
 			nickname("*"),
+			connecTime(std::time(0)),
 			lastPing(std::time(0)),
 			lastPong(std::time(0))
 {
 
-	print_log("New connection on port " + ft_itoa(this->fd));
+	print_log("New connection on fd " + ft_itoa(this->fd));
 	fcntl(fd, F_SETFL, O_NONBLOCK);
 	char hostname[NI_MAXHOST];
 	if (getnameinfo((struct sockaddr *) &address, sizeof(address), hostname, NI_MAXHOST, NULL, 0, NI_NUMERICSERV) != 0)

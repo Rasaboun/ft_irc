@@ -390,5 +390,5 @@ Channel::Channel(Ircserv*   serv, const std::string& name):
 
 Channel::~Channel()
 {
-    print_log("Destroying new channel " + name);
+    print_log("Destroying channel " + name);
 }

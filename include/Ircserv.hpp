@@ -5,9 +5,9 @@
 # include "Client.hpp"
 # include "Channel.hpp"
 
+# define	NOPASS_TIMEOUT	5
 # define	TIMEOUT 		300
 # define	MYPING 			15
-# define	NOPASS_TIMEOUT	15
 # define	OP_PASSWORD		"operator123"
 
 class Ircserv

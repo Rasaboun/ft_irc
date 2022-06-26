@@ -44,7 +44,7 @@ std::string     error_replies(int code, Client* client, Ircserv& serv, Command& 
         case ERR_ALREADYREGISTERED:
             return(":Unautorized command (already registered)");             
         case ERR_PASSWDMISMATCH:
-            return(" :Password incorrect");             
+            return(":Password incorrect");             
         case ERR_CHANNELISFULL:
             return(param + " :Cannot join channel (+l)");
         case ERR_BANNEDFROMCHAN:

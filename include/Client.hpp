@@ -76,6 +76,7 @@ class Client
 	std::vector<Message>			messages;
 	std::vector<std::string>		channels;
 
+	time_t							connecTime;
 	time_t							lastPing;
 	time_t							lastPong;
 

@@ -61,6 +61,7 @@ int	user(Client *client, Ircserv& serv, Command& command)
 	reply(RPL_CREATED, client, serv, command);
 	reply(RPL_MYINFO, client, serv, command);
 	reply(RPL_ISUPPORT, client, serv, command);
+	print_log("User " + client->getNickname() + " successfully registered");
 	
 	return (0);
 }
@@ -92,9 +93,9 @@ int	oper(Client *client, Ircserv& serv, Command& command)
 	if (command.getParam(1) != serv.getOpPassword())
 		return (reply(ERR_PASSWDMISMATCH, client, serv, command));
 	cli->setMode(OPERATOR, true, serv);
-	cli->print("MODE " + cli->getNickname() + " " + cli->getModes());
+	cli->print("MODE " + cli->getNickname() + " +o");
 	if (cli != client)
-		client->print("MODE " + cli->getNickname() + " " + cli->getModes());
+		client->print("MODE " + cli->getNickname() + " +o");
 
 	reply(RPL_YOUREOPER, cli, serv, command);
 	return (0);
