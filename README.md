@@ -67,3 +67,6 @@ Supported user modes:
 ``i`` user is hidden from other users
 
 ``o`` user receives ``WALLOPS`` messages
+
+# Example
+![](https://github.com/bditte/ft_irc/blob/master/IRC.gif)
