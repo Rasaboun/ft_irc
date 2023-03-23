@@ -1,6 +1,10 @@
 # ft_irc
 IRC Server in C++
 
+
+[irc.webm](https://user-images.githubusercontent.com/40967731/227237055-0d00937f-d1e8-4b76-921b-32038f3042da.webm)
+
+
 # Usage
 You can by running `make` command and then start the server with `./ircserv [port] [password]` .
 Then you can connect using an IRC client, such as [irssi](https://irssi.org/), which the server has been developped for.
